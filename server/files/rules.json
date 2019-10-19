@@ -1,0 +1,26 @@
+{
+    "forward": {
+        "goals": 1,
+        "assists": 1,
+        "power play goals": 1,
+        "shorthanded goals": 1,
+        "game winning goals": 1
+    },
+    "defense": {
+        "goals": 2,
+        "assists": 1,
+        "shorthanded goals": 1,
+        "game winning goals": 1
+    },
+    "goalies":{
+        "wins": 2,
+        "shut outs": 2
+    },
+    "teams": {
+        "regulation win": 2,
+        "ot win": 2,
+        "shootout win": 2,
+        "ot loss": 0.5,
+        "shootout loss": 0.5
+    }
+}
