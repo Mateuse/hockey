@@ -3,18 +3,12 @@ import { PlayersService } from './players.service';
 import { getHeapStatistics } from 'v8';
 
 @Controller('players')
-export class PlayersController implements OnModuleInit{
+export class PlayersController{
 
     constructor(private readonly playersService: PlayersService) { }
-
-    onModuleInit(){
-        this.playersService.getPlayersFromFile()
-    }
-
     @Get()
     getPlayers() {
-        this.playersService.savePlayers();
-        return this.playersService.getPlayersFromFile();
+        return this.playersService.players;
     }
 
     @Get(":player")

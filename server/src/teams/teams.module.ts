@@ -14,9 +14,4 @@ export class TeamsModule {
     constructor(private readonly teamsService: TeamsService){
 
     }
-
-    onModuleInit(){
-        this.logger.log("TeamsModule has started");
-        this.teamsService.getTeamsFromFile();
-    }
 }

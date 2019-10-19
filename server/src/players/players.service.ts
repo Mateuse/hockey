@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TeamsService } from '../teams/teams.service';
 import { HttpService } from '@nestjs/common/http';
-import * as fs from 'fs';
 import { stringify } from 'querystring';
 import { map, catchError} from 'rxjs/operators';
 
@@ -9,7 +8,7 @@ import { map, catchError} from 'rxjs/operators';
 export class PlayersService {
     readonly PLAYERSFILE = "./files/players.json";
     FIRST: boolean = true;
-    private players: Array<any> = []
+    players: Array<any> = []
     private readonly logger = new Logger(PlayersService.name);
 
     constructor(private readonly teamService: TeamsService, private readonly http: HttpService){}
@@ -17,7 +16,6 @@ export class PlayersService {
     async getPlayersFromAllTeams(){
         this.logger.log("Entered getPlayersFromAllTeams()");
         let ids = this.teamService.getAllTeamsIds();
-        let players = [];
         for(const element of ids){
             await this.http.get(`https://statsapi.web.nhl.com/api/v1/teams/${element}/roster`)
                 .subscribe(
@@ -34,39 +32,10 @@ export class PlayersService {
         }
     }
 
-    savePlayers(): boolean{
-        this.logger.log("Entered savePlayers()")
-        try{
-            fs.writeFileSync(this.PLAYERSFILE, JSON.stringify(this.players));
-            return true
-        }
-        catch(err){
-            this.logger.error(`Error saving players to file\n${err}`);
-            return false;
-        }
-
-    }
-
-    getPlayersFromFile(): any{
-        this.logger.log("Entered getPlayersFromFile()");
-
-        try{
-            let rawdata = fs.readFileSync(this.PLAYERSFILE);
-            let players = JSON.parse(rawdata.toString());
-            this.logger.log("Got players from file " + this.PLAYERSFILE);
-            return players;
-        }
-        catch(err){
-            this.logger.error(`Error getting players from files ${err}`);
-            return null;
-        }
-
-    }
-
     getPlayerByName(player): any{
         this.logger.log("Entered getPlayer()");
         let matches = []
-        let players = this.getPlayersFromFile();
+        let players = this.players;
         players.forEach(p => {
             if((p.fullName).toUpperCase().includes(player.toUpperCase())){
                 matches.push(p);
