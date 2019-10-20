@@ -1,6 +1,7 @@
-import { Module, HttpModule, Logger } from '@nestjs/common';
+import { Module, HttpModule, Global } from '@nestjs/common';
 import { TeamsController } from './teams.controller';
 import { TeamsService } from './teams.service';
+import { PlayersModule } from '../players/players.module';
 
 @Module({
     imports: [HttpModule],
@@ -9,9 +10,4 @@ import { TeamsService } from './teams.service';
     exports: [TeamsService]
 })
 export class TeamsModule {
-    teams: any
-    private readonly logger = new Logger(TeamsModule.name);
-    constructor(private readonly teamsService: TeamsService){
-
-    }
 }

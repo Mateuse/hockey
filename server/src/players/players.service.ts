@@ -11,7 +11,7 @@ export class PlayersService {
     players: Array<any> = []
     private readonly logger = new Logger(PlayersService.name);
 
-    constructor(private readonly teamService: TeamsService, private readonly http: HttpService){}
+    constructor(private readonly http: HttpService, private readonly teamService: TeamsService){}
 
     async getPlayersFromAllTeams(){
         this.logger.log("Entered getPlayersFromAllTeams()");

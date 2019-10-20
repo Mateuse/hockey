@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/common/http';
 import * as fs from 'fs';
+import { PlayersService } from '../players/players.service';
+import { resolve } from 'dns';
+import { VirtualTimeScheduler } from 'rxjs';
 
 @Injectable()
 export class TeamsService {
@@ -10,23 +13,25 @@ export class TeamsService {
     constructor(private readonly http: HttpService){}
 
     getTeams(): any{
-        this.logger.log("Entered getTeams()");
+        return new Promise((resolve, reject) => {
+            this.logger.log("Entered getTeams()");
         try{
                 this.http.get("https://statsapi.web.nhl.com/api/v1/teams")
                     .subscribe(
                         res => {
                             this.teams.push(res.data.teams);
-                            this.logger.log("Saved teams to array")
+                            this.logger.log("Saved teams to var")
+                            resolve(res);
                         },
                         err => {
-                            this.logger.error(err)
-                            return JSON.stringify(err);
+                            reject(JSON.stringify(err))
                         }
                     )          
         }
         catch{
-            return "Something went wrong";
-        }        
+            reject("error in http request for https://statsapi.web.nhl.com/api/v1/teams")
+        } 
+        })       
     }   
 
     getTeam(team: String): any{
@@ -46,8 +51,8 @@ export class TeamsService {
         this.logger.log("Entered getAllTeamsIds()");
         let ids: Array<Number> = []
         let teams = this.teams;
-        for (let x in teams) {
-            ids.push(teams[x].id)
+        for (let x in teams[0]) {
+            ids.push(teams[0][x].id)
         }
         return ids
     }

@@ -2,13 +2,9 @@ import { Controller, Get, Param, OnModuleInit } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 
 @Controller('teams')
-export class TeamsController implements OnModuleInit{
+export class TeamsController {
 
     constructor(private readonly teamsService: TeamsService) {}
-
-    onModuleInit(){
-        this.teamsService.getTeams();
-    }
 
     @Get()
     getDefaultWatermarks(){
