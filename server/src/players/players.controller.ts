@@ -10,7 +10,7 @@ export class PlayersController{
         return this.playersService.players;
     }
 
-    @Get(":player")
+    @Get("/player/:player")
     getPlayer(@Param('player') player) {
         return this.playersService.getPlayerByName(player);
     }
@@ -18,5 +18,10 @@ export class PlayersController{
     @Get("stats/:player")
     getPlayerStats(@Param('player') player){
         return this.playersService.getStatsForPlayer(player);
+    }
+
+    @Get("top")
+    getTopPlayers(){
+        return this.playersService.stats;
     }
 }
