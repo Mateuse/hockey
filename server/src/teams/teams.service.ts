@@ -1,9 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/common/http';
-import * as fs from 'fs';
-import { PlayersService } from '../players/players.service';
-import { resolve } from 'dns';
-import { VirtualTimeScheduler } from 'rxjs';
 
 @Injectable()
 export class TeamsService {
@@ -38,7 +34,7 @@ export class TeamsService {
         this.logger.log("Entered getTeam()");
         let teams = this.teams; 
         for(let x in teams[0]){
-            if ((teams[0][x].name).toUpperCase().includes(team.toUpperCase()) || (teams[0][x].abbreviation).toUpperCase().includes(team.toUpperCase())){
+            if ((teams[0][x].name).toUpperCase().includes(team[0][x].toUpperCase()) || (teams[0][x].abbreviation).toUpperCase().includes(team.toUpperCase())){
                 this.logger.log("Found team " + teams[0][x].name);
                 return teams[0][x];
             }

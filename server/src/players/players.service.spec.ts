@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TeamsService } from '../teams/teams.service';
 import { PlayersService } from './players.service';
-import { HttpService, HttpModule, INestApplication } from '@nestjs/common';
+import { HttpModule } from '@nestjs/common';
 
 
 describe('PlayersService', () => {
@@ -22,7 +22,8 @@ describe('PlayersService', () => {
   });
 
   it('Finds player in json', () => {
-    spyOn(service, 'getPlayersFromFile').and.returnValue(json);
+
+    service.players = json;
 
     expect(service.getPlayerByName("Reimer")).toEqual([json[0]]);
     expect(service.getPlayerByName("test")).toEqual("test not found on active rosters");

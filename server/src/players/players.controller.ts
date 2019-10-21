@@ -1,6 +1,5 @@
 import { Controller, Get, OnModuleInit, Param  } from '@nestjs/common';
 import { PlayersService } from './players.service';
-import { getHeapStatistics } from 'v8';
 
 @Controller('players')
 export class PlayersController{
