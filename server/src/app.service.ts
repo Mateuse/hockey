@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PlayersService } from './players/players.service';
 import { TeamsService } from './teams/teams.service';
 import { resolve } from 'url';
+import { rejects } from 'assert';
 
 @Injectable()
 export class AppService {
@@ -11,8 +12,12 @@ export class AppService {
       return new Promise((resolve, reject) => {
          resolve(this.teamsService.getTeams());
       }).then(() => {
-        this.playersService.getPlayersFromAllTeams();
-      })
+        return new Promise((resolve, reject) => {
+          resolve(this.playersService.getPlayersFromAllTeams());
+        }).then(() => {
+          this.playersService.getStatsForPlayers();
+        });        
+      });
   }
 
   getHello(): string {
