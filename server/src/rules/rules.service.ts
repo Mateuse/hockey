@@ -1,13 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+var path = require("path");
 import * as fs from 'fs';
+import { pathToFileURL } from 'url';
 
 @Injectable()
-export class RulesService {
+export class RulesService implements OnModuleInit{
     rules: JSON;
     constructor(){}
 
+    onModuleInit(){
+        //weird file stuff going on
+        this.rules = JSON.parse(fs.readFileSync(path.join(__dirname, "../../files/rules.json"), 'utf8'));
+       
+    }
+
     getRules(){
-        var rules = fs.readFileSync("../../files/rules.json");
-        return rules;
+        return this.rules;
     }
 }

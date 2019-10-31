@@ -6,7 +6,7 @@ export class RulesController {
 
     constructor(private readonly rulesService: RulesService){}
 
-    @Get("/rules")
+    @Get("")
     getRules(){
         return this.rulesService.getRules();
     }

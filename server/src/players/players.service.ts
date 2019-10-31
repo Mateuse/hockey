@@ -3,6 +3,7 @@ import { TeamsService } from '../teams/teams.service';
 import { HttpService } from '@nestjs/common/http';
 import { map, catchError} from 'rxjs/operators';
 import { Player } from './player.interface';
+import { RulesService } from '../rules/rules.service';
 
 @Injectable()
 export class PlayersService {
@@ -11,7 +12,7 @@ export class PlayersService {
     players: Array<any> = [];
     private readonly logger = new Logger(PlayersService.name);
 
-    constructor(private readonly http: HttpService, private readonly teamService: TeamsService){}
+    constructor(private readonly http: HttpService, private readonly teamService: TeamsService, private readonly rulesService: RulesService){}
 
     getPlayersFromAllTeams(): any{
         return new Promise((resolve, reject) => {
