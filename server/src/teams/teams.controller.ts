@@ -11,8 +11,13 @@ export class TeamsController {
         return this.teamsService.teams;
     }
 
-    @Get(":teamname")
+    @Get("team/:teamname")
     getTeam(@Param('teamname') teamname) {
         return this.teamsService.getTeam(teamname)
+    }
+
+    @Get("top")
+    getTopTeams(){
+        return this.teamsService.topTeams();
     }
 }

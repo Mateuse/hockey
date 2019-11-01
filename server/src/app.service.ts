@@ -13,6 +13,7 @@ export class AppService {
          resolve(this.teamsService.getTeams());
       }).then(() => {
         return new Promise((resolve, reject) => {
+          this.teamsService.getTeamsStats();
           resolve(this.playersService.getPlayersFromAllTeams());
         }).then(() => {
           this.playersService.getStatsForPlayers();

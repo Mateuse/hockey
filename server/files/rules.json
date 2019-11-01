@@ -17,10 +17,7 @@
         "shutouts": 2
     },
     "teams": {
-        "regulationWin": 2,
-        "otWin": 2,
-        "shootoutWin": 2,
-        "otLoss": 0.5,
-        "shootoutLoss": 0.5
+        "wins": 2,
+        "ot": 0.5
     }
 }
