@@ -99,12 +99,12 @@ export class PlayersService {
         });        
     }
 
-    topPlayers(): any{
+    topPlayers(query = "all"): any{
         this.logger.log("Entered topPlayers()");
-        return this.sortStats();
+        return this.sortStats(query);
     }
 
-    sortStats(){
+    sortStats(query){
         let forwards = [];
         let defense = [];
         let goalies = [];
@@ -121,12 +121,25 @@ export class PlayersService {
                 } 
             }
         }
-        forwards = this.getTopPlayers(forwards, "forward");
-        defense = this.getTopPlayers(defense, "defense");
-        goalies = this.getTopPlayers(goalies, "goalies");
 
-        let players = forwards.concat(defense);
-        players.concat(goalies)
+        let players = []
+        if(query == "all"){
+            forwards = this.getTopPlayers(forwards, "forward");
+            defense = this.getTopPlayers(defense, "defense");
+            goalies = this.getTopPlayers(goalies, "goalies");
+            players = forwards.concat(defense);
+            players.concat(goalies)
+        }
+        else if(query == "forwards"){
+            players = this.getTopPlayers(forwards, "forward");
+        }
+        else if(query == "defense"){
+            players = this.getTopPlayers(defense, "defense");
+        }
+        else if(query == "goalies"){
+            players = this.getTopPlayers(goalies, "goalies");
+        }      
+        
         return players.sort((a, b) => (a.stats["poolPoints"] > b.stats["poolPoints"] ? -1 : ((b.stats["poolPoints"] > a.stats["poolPoints"]) ? 1 : 0)))
     }
 
@@ -137,7 +150,6 @@ export class PlayersService {
                 points += players[x].stats[y] * this.rulesService.rules[type][y];
             }
             players[x].stats["poolPoints"] = points;
-            console.log(players[x].stats["poolPoints"])
         }
         return players;
     }

@@ -24,4 +24,19 @@ export class PlayersController{
     getTopPlayersStats(){
         return this.playersService.topPlayers();
     }
+
+    @Get("top/forwards")
+    getTopForwardsStats() {
+        return this.playersService.topPlayers("forwards");
+    }
+
+    @Get("top/defense")
+    getTopDefenseStats() {
+        return this.playersService.topPlayers("defense");
+    }
+
+    @Get("top/goalies")
+    getTopGoaliesStats() {
+        return this.playersService.topPlayers("goalies");
+    }
 }
