@@ -2,25 +2,25 @@
     "forward": {
         "goals": 1,
         "assists": 1,
-        "power_play_goals": 1,
-        "shorthanded_goals": 1,
-        "game_winning_goals": 1
+        "powerPlayGoals": 1,
+        "shortHandedGoals": 1,
+        "gameWinningGoals": 1
     },
     "defense": {
         "goals": 2,
         "assists": 1,
-        "shorthanded_goals": 1,
-        "game_winning_goals": 1
+        "shortHandedGoals": 1,
+        "gameWinningGoals": 1
     },
     "goalies":{
         "wins": 2,
-        "shut_outs": 2
+        "shutouts": 2
     },
     "teams": {
-        "regulation win": 2,
-        "ot_win": 2,
-        "shootout_win": 2,
-        "ot_loss": 0.5,
-        "shootout_loss": 0.5
+        "regulationWin": 2,
+        "otWin": 2,
+        "shootoutWin": 2,
+        "otLoss": 0.5,
+        "shootoutLoss": 0.5
     }
 }

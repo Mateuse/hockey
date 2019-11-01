@@ -22,6 +22,6 @@ export class PlayersController{
 
     @Get("top")
     getTopPlayersStats(){
-        return this.playersService.topPlayers("wins");
+        return this.playersService.topPlayers();
     }
 }

@@ -99,22 +99,46 @@ export class PlayersService {
         });        
     }
 
-    topPlayers(param): any{
+    topPlayers(): any{
         this.logger.log("Entered topPlayers()");
-        return this.sortStats(param);
+        return this.sortStats();
     }
 
-    sortStats(param){
-        let players = []
-        console.log(this.players.length)
+    sortStats(){
+        let forwards = [];
+        let defense = [];
+        let goalies = [];
         for(let x in this.players){
             if(this.players[x].stats != undefined){
-                if(this.players[x].stats[param] != undefined){
-                    players.push(this.players[x])
-                }                
+                if(this.players[x].position == 'D'){
+                    defense.push(this.players[x])
+                }        
+                else if (this.players[x].position == 'G')    {
+                    goalies.push(this.players[x])
+                }  
+                else{
+                    forwards.push(this.players[x])
+                } 
             }
         }
+        forwards = this.getTopPlayers(forwards, "forward");
+        defense = this.getTopPlayers(defense, "defense");
+        goalies = this.getTopPlayers(goalies, "goalies");
 
-        return players.sort((a, b) => (a.stats[param] > b.stats[param] ? -1 : ((b.stats[param] > a.stats[param]) ? 1 : 0)))
+        let players = forwards.concat(defense);
+        players.concat(goalies)
+        return players.sort((a, b) => (a.stats["poolPoints"] > b.stats["poolPoints"] ? -1 : ((b.stats["poolPoints"] > a.stats["poolPoints"]) ? 1 : 0)))
+    }
+
+    getTopPlayers(players, type){
+        for(let x in players){
+            let points = 0;
+            for(let y in this.rulesService.rules[type]){
+                points += players[x].stats[y] * this.rulesService.rules[type][y];
+            }
+            players[x].stats["poolPoints"] = points;
+            console.log(players[x].stats["poolPoints"])
+        }
+        return players;
     }
 }
