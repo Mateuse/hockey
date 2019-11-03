@@ -116,7 +116,7 @@ export class PlayersService {
                 else if (this.players[x].position == 'G')    {
                     goalies.push(this.players[x])
                 }  
-                else{
+        else{
                     forwards.push(this.players[x])
                 } 
             }
@@ -149,7 +149,7 @@ export class PlayersService {
             for(let y in this.rulesService.rules[type]){
                 points += players[x].stats[y] * this.rulesService.rules[type][y];
             }
-            players[x]["poolPoints"] = points;
+            players[x].stats["poolPoints"] = points;
         }
         return players;
     }
