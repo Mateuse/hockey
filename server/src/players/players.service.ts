@@ -2,14 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { TeamsService } from '../teams/teams.service';
 import { HttpService } from '@nestjs/common/http';
 import { map, catchError} from 'rxjs/operators';
-import { Player } from './player.interface';
 import { RulesService } from '../rules/rules.service';
+import { Player } from './player.interface';
 
 @Injectable()
 export class PlayersService {
     readonly PLAYERSFILE = "./files/players.json";
     FIRST: boolean = true;
-    players: Array<any> = [];
+    players: Array<Player> = [];
     private readonly logger = new Logger(PlayersService.name);
 
     constructor(private readonly http: HttpService, private readonly teamService: TeamsService, private readonly rulesService: RulesService){}
