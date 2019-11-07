@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 var path = require("path");
 import * as fs from 'fs';
+import { PlayersService } from '../players/players.service';
 import { pathToFileURL } from 'url';
 
 @Injectable()
@@ -16,5 +17,9 @@ export class RulesService implements OnModuleInit{
 
     getRules(){
         return this.rules;
+    }
+
+    getStatsForRules(selectedRules = this.rules){
+        // this.playersService.getStatsForPlayers()
     }
 }

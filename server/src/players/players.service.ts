@@ -100,7 +100,7 @@ export class PlayersService {
     }
 
     topPlayers(query = "all"): any{
-        this.logger.log("Entered topPlayers()");
+        this.logger.log(`Entered topPlayers() for query ${query}`);
         return this.sortStats(query);
     }
 
@@ -140,14 +140,14 @@ export class PlayersService {
             players = this.getTopPlayers(goalies, "goalies");
         }      
         
-        return players.sort((a, b) => (a.stats["poolPoints"] > b.stats["poolPoints"] ? -1 : ((b.stats["poolPoints"] > a.stats["poolPoints"]) ? 1 : 0)))
+        return players.sort((a, b) => (a["poolPoints"] > b["poolPoints"] ? -1 : ((b["poolPoints"] > a["poolPoints"]) ? 1 : 0)))
     }
 
-    getTopPlayers(players, type){
+    getTopPlayers(players, type, rules = this.rulesService.rules){
         for(let x in players){
             let points = 0;
-            for(let y in this.rulesService.rules[type]){
-                points += players[x].stats[y] * this.rulesService.rules[type][y];
+            for(let y in rules[type]){
+                points += players[x].stats[y] * rules[type][y];
             }
             players[x]["poolPoints"] = points;
         }

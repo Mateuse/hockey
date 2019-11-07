@@ -84,5 +84,4 @@ export class TeamsService {
 
         return this.teams[0].sort((a, b) => (a.stats["poolPoints"] > b.stats["poolPoints"] ? -1 : ((b.stats["poolPoints"] > a.stats["poolPoints"]) ? 1 : 0)))
     }
-
 }
