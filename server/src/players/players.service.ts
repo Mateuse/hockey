@@ -128,7 +128,7 @@ export class PlayersService {
             defense = this.getTopPlayers(defense, "defense");
             goalies = this.getTopPlayers(goalies, "goalies");
             players = forwards.concat(defense);
-            players.concat(goalies)
+            players = players.concat(goalies)
         }
         else if(query == "forwards"){
             players = this.getTopPlayers(forwards, "forward");
