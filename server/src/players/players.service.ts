@@ -149,7 +149,7 @@ export class PlayersService {
             for(let y in rules[type]){
                 points += players[x].stats[y] * rules[type][y];
             }
-            players[x].stats["poolPoints"] = points;
+            players[x]["poolPoints"] = points;
         }
         return players;
     }
