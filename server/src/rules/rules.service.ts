@@ -1,25 +1,25 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 var path = require("path");
 import * as fs from 'fs';
-import { PlayersService } from '../players/players.service';
-import { pathToFileURL } from 'url';
+import { PointRules, PositionRules } from './rules.interface'
 
 @Injectable()
 export class RulesService implements OnModuleInit{
-    rules: JSON;
+    positionRules: PositionRules;
+    pointRules: PointRules;
     constructor(){}
 
     onModuleInit(){
-        //weird file stuff going on
-        this.rules = JSON.parse(fs.readFileSync(path.join(__dirname, "../../files/rules.json"), 'utf8'));
-       
+        //eventual change to db
+        this.pointRules = JSON.parse(fs.readFileSync(path.join(__dirname, "../../files/rules.json"), 'utf8'));
+        this.positionRules = JSON.parse(fs.readFileSync(path.join(__dirname, "../../files/positionRules.json"), 'utf8'))
     }
 
     getRules(){
-        return this.rules;
+        return this.pointRules;
     }
 
-    getStatsForRules(selectedRules = this.rules){
+    getStatsForRules(selectedRules = this.pointRules){
         // this.playersService.getStatsForPlayers()
     }
 }

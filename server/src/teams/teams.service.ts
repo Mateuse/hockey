@@ -5,7 +5,6 @@ import { Team } from './team.interface';
 
 @Injectable()
 export class TeamsService {
-    readonly TEAMSFILE = "./files/teams.json";
     private readonly logger = new Logger(TeamsService.name);
     teams: Array<Team> = [];
     constructor(private readonly http: HttpService, private readonly rulesService: RulesService){}
@@ -32,7 +31,6 @@ export class TeamsService {
                                 }
                                 this.teams.push(team)
                             }
-                            console.log(this.teams)
                             this.logger.log("Saved teams to var")
                             resolve(res);
                         },
@@ -92,8 +90,8 @@ export class TeamsService {
 
         for(let x in this.teams){
             let points = 0;
-            for(let y in this.rulesService.rules["teams"]){
-                points += this.teams[x].stats[y] * this.rulesService.rules["teams"][y];
+            for(let y in this.rulesService.pointRules.teams){
+                points += this.teams[x].stats[y] * this.rulesService.pointRules.teams[y];
             }
             this.teams[x].stats["poolPoints"] = points;
         }

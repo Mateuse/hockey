@@ -143,7 +143,7 @@ export class PlayersService {
         return players.sort((a, b) => (a["poolPoints"] > b["poolPoints"] ? -1 : ((b["poolPoints"] > a["poolPoints"]) ? 1 : 0)))
     }
 
-    getTopPlayers(players, type, rules = this.rulesService.rules){
+    getTopPlayers(players, type, rules = this.rulesService.pointRules){
         for(let x in players){
             let points = 0;
             for(let y in rules[type]){

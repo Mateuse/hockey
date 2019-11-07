@@ -1,12 +1,11 @@
 import { Player } from '../players/player.interface';
+import { Team } from '../teams/team.interface';
 
-export interface FanstasyTeam {
+export interface FantasyTeam {
     id: Number,
     name: string,
-    players: Player[]
+    players: Number[],
+    teams: Number[],
     points: Number
 }
 
-export function getTeamPoints(){
-    
-}
