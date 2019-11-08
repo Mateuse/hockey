@@ -4,5 +4,6 @@ export interface Player {
     stats: JSON,
     link: string,
     position: string,
-    poolPoints: number
+    poolPoints: number,
+    poolTeam: number
 }

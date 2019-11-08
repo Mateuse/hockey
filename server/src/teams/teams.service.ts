@@ -17,7 +17,6 @@ export class TeamsService {
                     .subscribe(
                         res => {
                             for(let x in res.data.teams){
-                                console.log(res.data.teams[x])
                                 var id: number = res.data.teams[x].id
                                 var name: string = res.data.teams[x].name
                                 var abbreviation: string = res.data.teams[x].abbreviation
@@ -29,7 +28,8 @@ export class TeamsService {
                                     "abbreviation": abbreviation,
                                     "link": link,
                                     "stats": stats,
-                                    "poolPoints": 0
+                                    "poolPoints": 0,
+                                    "poolTeam": null
                                 }
                                 this.teams.push(team)
                             }

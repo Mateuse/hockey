@@ -69,7 +69,9 @@ export class PlayersService {
                 return;
             }
         });
-        this.logger.log(`${id} not found on active rosters`);
+        if(match == null){
+            this.logger.log(`${id} not found on active rosters`);
+        }
         return match;
     }
 
