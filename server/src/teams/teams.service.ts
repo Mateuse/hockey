@@ -17,7 +17,8 @@ export class TeamsService {
                     .subscribe(
                         res => {
                             for(let x in res.data.teams){
-                                var id: Number = res.data.teams[x].id
+                                console.log(res.data.teams[x])
+                                var id: number = res.data.teams[x].id
                                 var name: string = res.data.teams[x].name
                                 var abbreviation: string = res.data.teams[x].abbreviation
                                 var link: string = res.data.teams[x].link
@@ -27,7 +28,8 @@ export class TeamsService {
                                     "name": name,
                                     "abbreviation": abbreviation,
                                     "link": link,
-                                    "stats": stats
+                                    "stats": stats,
+                                    "poolPoints": 0
                                 }
                                 this.teams.push(team)
                             }
@@ -42,26 +44,37 @@ export class TeamsService {
         catch{
             reject("error in http request for https://statsapi.web.nhl.com/api/v1/teams")
         } 
-        })       
+        });       
     }   
 
-    getTeam(team: String): any{
+    getTeam(team: String): Team{
         this.logger.log("Entered getTeam()");
         let teams = this.teams; 
         for(let x in teams){
-            console.log(teams)
             if ((teams[x].name).toUpperCase().includes(team.toUpperCase()) || (teams[x].abbreviation).toUpperCase().includes(team.toUpperCase())){
                 this.logger.log("Found team " + teams[x].name);
                 return teams[x];
             }
         }
         this.logger.log("Couldn't Find " + team );
-        return "Couldn't Find " + team;
+        return null;
+    }
+
+    getTeamById(id: number): Team{
+        let match = null;
+
+        this.teams.forEach(t => {
+            if(t.id == id){
+                match = t;
+                return;
+            }
+        });
+        return match
     }
 
     getAllTeamsIds(): any{
         this.logger.log("Entered getAllTeamsIds()");
-        let ids: Array<Number> = []
+        let ids: Array<number> = []
         let teams = this.teams;
         for (let x in teams) {
             ids.push(teams[x].id)
@@ -70,12 +83,13 @@ export class TeamsService {
     }
 
     getTeamsStats(): any{
-        this.logger.log("Entered getTopTeams()")
+        this.logger.log("Entered getTeamsStats()")
         for(let x in this.teams){
             this.http.get(`https://statsapi.web.nhl.com/api/v1/teams/${this.teams[x].id}/stats`)
                 .subscribe(
                     res => {
-                        this.teams[x]["stats"] = res.data.stats[0].splits[0].stat
+                        this.teams[x].stats = res.data.stats[0].splits[0].stat                      
+                        this.teams[x].poolPoints = this.getPoolPoints(this.teams[x].stats)
                     },
                     err => {
                         this.logger.error(err);
@@ -87,15 +101,14 @@ export class TeamsService {
 
     topTeams(){
         this.logger.log("Entered topTeams()");
+        return this.teams.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.poolPoints > a.poolPoints) ? 1 : 0)))
+    }
 
-        for(let x in this.teams){
-            let points = 0;
-            for(let y in this.rulesService.pointRules.teams){
-                points += this.teams[x].stats[y] * this.rulesService.pointRules.teams[y];
-            }
-            this.teams[x].stats["poolPoints"] = points;
+    getPoolPoints(stats): number{
+        let points = 0;
+        for(let x in this.rulesService.pointRules.teams){
+            points += stats[x] * this.rulesService.pointRules.teams[x]
         }
-
-        return this.teams.sort((a, b) => (a.stats["poolPoints"] > b.stats["poolPoints"] ? -1 : ((b.stats["poolPoints"] > a.stats["poolPoints"]) ? 1 : 0)))
+        return points;
     }
 }

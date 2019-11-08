@@ -41,7 +41,7 @@ export class PlayersService {
         });            
     }
 
-    getPlayerByName(player): any{
+    getPlayerByName(player): Player[]{
         this.logger.log("Entered getPlayerByName()");
         let matches = []
         let players = this.players;
@@ -56,8 +56,21 @@ export class PlayersService {
         }
         else{
             this.logger.log(`${player} not found on active rosters`);
-            return `${player} not found on active rosters`;
+            return null;
         }        
+    }
+
+    getPlayerById(id): Player{
+        this.logger.log(`Entered getPlayerById() for ${id}`);
+        let match = null
+        this.players.forEach(p => {            
+            if(p.id == id){
+                match = p;
+                return;
+            }
+        });
+        this.logger.log(`${id} not found on active rosters`);
+        return match;
     }
 
     getStatsForPlayer(player): any{
@@ -85,7 +98,16 @@ export class PlayersService {
                     res => {
                         try {
                             var stats = res.data.stats[0].splits[0].stat;
-                            player["stats"] = stats;
+                            player.stats = stats;
+                            if(player.position == 'C' || player.position == 'RW' || player.position == 'LW'){
+                                player.poolPoints = this.getPoolPoints(player.stats, 'forward');
+                            }
+                            else if(player.position == 'D'){
+                                player.poolPoints = this.getPoolPoints(player.stats, 'defense');  
+                            }
+                            else if(player.position == 'G'){
+                                player.poolPoints = this.getPoolPoints(player.stats, 'goalie');
+                            }                        
                         }
                         catch (err) {
                             this.logger.error(err);
@@ -116,7 +138,7 @@ export class PlayersService {
                 else if (this.players[x].position == 'G')    {
                     goalies.push(this.players[x])
                 }  
-        else{
+                else{
                     forwards.push(this.players[x])
                 } 
             }
@@ -124,23 +146,20 @@ export class PlayersService {
 
         let players = []
         if(query == "all"){
-            forwards = this.getTopPlayers(forwards, "forward");
-            defense = this.getTopPlayers(defense, "defense");
-            goalies = this.getTopPlayers(goalies, "goalies");
             players = forwards.concat(defense);
             players = players.concat(goalies)
         }
         else if(query == "forwards"){
-            players = this.getTopPlayers(forwards, "forward");
+            players = forwards
         }
         else if(query == "defense"){
-            players = this.getTopPlayers(defense, "defense");
+            players = defense
         }
         else if(query == "goalies"){
-            players = this.getTopPlayers(goalies, "goalies");
+            players = goalies
         }      
         
-        return players.sort((a, b) => (a["poolPoints"] > b["poolPoints"] ? -1 : ((b["poolPoints"] > a["poolPoints"]) ? 1 : 0)))
+        return players.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)))
     }
 
     getTopPlayers(players, type, rules = this.rulesService.pointRules){
@@ -152,5 +171,13 @@ export class PlayersService {
             players[x]["poolPoints"] = points;
         }
         return players;
+    }
+
+    getPoolPoints(stats, type){
+        let points = 0;
+        for(let x in this.rulesService.pointRules[type]){
+            points += stats[x] * this.rulesService.pointRules[type][x]
+        }
+        return points;
     }
 }

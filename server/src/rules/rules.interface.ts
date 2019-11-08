@@ -6,10 +6,10 @@ export interface PointRules{
 }
 
 export interface PositionRules{
-    centers: Number,
-    wingers: Number,
-    defense: Number,
-    goalies: Number,
-    teams: Number,
-    wild: Number
+    centers: number,
+    wingers: number,
+    defense: number,
+    goalies: number,
+    teams: number,
+    wild: number
 }

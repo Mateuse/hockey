@@ -6,9 +6,10 @@ import { TeamsModule } from './teams/teams.module';
 import { PlayersModule } from './players/players.module';
 import { PlayersService } from './players/players.service';
 import { TeamsService } from './teams/teams.service';
+import { FantasyTeamsModule } from './fantasy-teams/fantasy-teams.module';
 
 @Module({
-  imports: [HttpModule, RulesModule, TeamsModule, PlayersModule],
+  imports: [HttpModule, RulesModule, TeamsModule, PlayersModule, FantasyTeamsModule],
   controllers: [AppController],
   providers: [AppService],
 })

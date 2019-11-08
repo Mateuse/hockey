@@ -1,8 +1,8 @@
 export interface Player {
-    id: Number,
+    id: number,
     fullName: string,
     stats: JSON,
     link: string,
     position: string,
-    poolPoints: Number
+    poolPoints: number
 }

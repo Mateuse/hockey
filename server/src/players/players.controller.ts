@@ -12,7 +12,11 @@ export class PlayersController{
 
     @Get("/player/:player")
     getPlayer(@Param('player') player) {
-        return this.playersService.getPlayerByName(player);
+        let result = this.playersService.getPlayerByName(player);
+        if(result == null){
+            return `${player} was not found`;
+        }
+        return result;
     }
 
     @Get("stats/:player")

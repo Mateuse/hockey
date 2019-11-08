@@ -2,10 +2,10 @@ import { Player } from '../players/player.interface';
 import { Team } from '../teams/team.interface';
 
 export interface FantasyTeam {
-    id: Number,
+    id: number,
     name: string,
-    players: Number[],
-    teams: Number[],
-    points: Number
+    players: number[],
+    teams: number[],
+    poolPoints: number
 }
 

@@ -12,7 +12,7 @@
         "shortHandedGoals": 1,
         "gameWinningGoals": 1
     },
-    "goalies":{
+    "goalie":{
         "wins": 2,
         "shutouts": 2
     },

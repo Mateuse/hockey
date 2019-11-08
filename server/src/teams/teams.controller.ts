@@ -7,13 +7,17 @@ export class TeamsController {
     constructor(private readonly teamsService: TeamsService) {}
 
     @Get()
-    getDefaultWatermarks(){
+    getTeams(){
         return this.teamsService.teams;
     }
 
     @Get("team/:teamname")
     getTeam(@Param('teamname') teamname) {
-        return this.teamsService.getTeam(teamname)
+        let team = this.teamsService.getTeam(teamname)
+        if(team == null){
+            return `Cant find team ${teamname}`;
+        }
+        return team;
     }
 
     @Get("top")

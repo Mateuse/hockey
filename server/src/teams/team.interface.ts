@@ -1,8 +1,9 @@
 
 export interface Team{
-    id: Number,
+    id: number,
     name: string,
     abbreviation: string,
     link: string,
-    stats: JSON
+    stats: JSON,
+    poolPoints: number
 }
