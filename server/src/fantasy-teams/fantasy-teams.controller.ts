@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Logger } from '@nestjs/common';
 import { FantasyTeamsService } from './fantasy-teams.service';
 
 @Controller('fantasy-teams')
@@ -8,7 +8,6 @@ export class FantasyTeamsController {
 
     @Get()
     getTeams(){
-        this.fantasy.fantasyTeamsPoints();
         return this.fantasy.getTeams();
     }
 

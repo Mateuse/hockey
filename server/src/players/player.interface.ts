@@ -5,5 +5,6 @@ export interface Player {
     link: string,
     position: string,
     poolPoints: number,
-    poolTeam: number
+    poolTeam: number,
+    acquisitionDate: string
 }

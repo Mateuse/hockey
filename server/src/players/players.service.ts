@@ -1,9 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Delete } from '@nestjs/common';
 import { TeamsService } from '../teams/teams.service';
 import { HttpService } from '@nestjs/common/http';
 import { map, catchError} from 'rxjs/operators';
 import { RulesService } from '../rules/rules.service';
 import { Player } from './player.interface';
+import { resolve } from 'path';
 
 @Injectable()
 export class PlayersService {
@@ -24,7 +25,8 @@ export class PlayersService {
                     .subscribe(
                         res => {
                             res.data.roster.forEach(element => {
-                                element.person["position"] = element.position.abbreviation
+                                element.person["position"] = element.position.abbreviation;
+                                element.person["poolTeam"] = null;
                                 this.players.push(element.person);
                             });
                             ids_left--;
@@ -123,6 +125,40 @@ export class PlayersService {
         });        
     }
 
+    getStatsAfterDate(player: Player, date){
+            date = new Date(date)
+            var currentYear = new Date();
+            var yearRange = '';
+            if (currentYear.getMonth() > 7) {
+                let end = currentYear.getFullYear() + 1;
+                yearRange = currentYear.getFullYear().toString() + end.toString()
+            }
+            else {
+                let end = currentYear.getFullYear() - 1;
+                yearRange = end.toString() + currentYear.getFullYear().toString()
+            }
+            this.http.get(`https://statsapi.web.nhl.com/api/v1/people/${player.id}/stats?stats=gameLog&season=${yearRange}`)
+                .subscribe(res => {
+                    let set = res.data.stats[0].splits;
+                    for (let x in set) {
+                        if (new Date(set[x].date) > date) {
+                            for (let y in set[x].stat) {
+                                player.stats[y] += set[x].stat[y];
+                            }
+                        }
+                    }
+                    if (player.position == 'C' || player.position == 'RW' || player.position == 'LW') {
+                        player.poolPoints = this.getPoolPoints(player.stats, 'forward');
+                    }
+                    else if (player.position == 'D') {
+                        player.poolPoints = this.getPoolPoints(player.stats, 'defense');
+                    }
+                    else if (player.position == 'G') {
+                        player.poolPoints = this.getPoolPoints(player.stats, 'goalie');
+                    }
+                });
+    }
+
     topPlayers(query = "all"): any{
         this.logger.log(`Entered topPlayers() for query ${query}`);
         return this.sortStats(query);
@@ -180,6 +216,7 @@ export class PlayersService {
         for(let x in this.rulesService.pointRules[type]){
             points += stats[x] * this.rulesService.pointRules[type][x]
         }
+
         return points;
     }
 }

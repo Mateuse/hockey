@@ -4,6 +4,7 @@ var path = require("path");
 import * as fs from 'fs';
 import { TeamsService } from '../teams/teams.service';
 import { PlayersService } from '../players/players.service';
+import { Player } from '../players/player.interface';
 
 @Injectable()
 export class FantasyTeamsService implements OnModuleInit{
@@ -20,13 +21,15 @@ export class FantasyTeamsService implements OnModuleInit{
     fantasyTeamsPoints(){
         this.teams.forEach(fteam => {
             fteam.players.forEach(p => {
-                let player = this.playerService.getPlayerById(p);
-                fteam.poolPoints += player.poolPoints;
+                this.setStatsToZero(p)
+                this.playerService.getStatsAfterDate(p, p.acquisitionDate);
+                fteam.poolPoints += p.poolPoints;
             });
             fteam.teams.forEach(t => {
-                let team = this.teamservice.getTeamById(t);
-                fteam.poolPoints += team.poolPoints;
-            })
+                this.setStatsToZero(t); 
+                this.teamservice.getStatsAfterDate(t, t.acquisitionDate);
+                fteam.poolPoints += t.poolPoints;
+            });
         })
     }
 
@@ -50,12 +53,15 @@ export class FantasyTeamsService implements OnModuleInit{
     addPlayerToTeam(playerId: number, teamId: number){
         let team = this.getTeamById(teamId);
         let player = this.playerService.getPlayerById(playerId);
-
+        
         if(player.poolTeam != null){
             return `${player.fullName} is already apart of a team '${this.getTeamById(player.poolTeam).name}'`
         }
         player.poolTeam = team.id
-        team.players.push(player.id);
+        player.acquisitionDate = new Date().toISOString().split('T')[0];
+        team.players.push(Object.assign({}, player));
+
+        this.fantasyTeamsPoints();
         //add to database once implemented
         return `Added ${player.fullName} to team '${team.name}'`;
     }
@@ -68,8 +74,16 @@ export class FantasyTeamsService implements OnModuleInit{
             return `${team.name} is already apart of a team '${this.getTeamById(team.poolTeam).name}`
         }
         team.poolTeam = fteam.id;
-        fteam.teams.push(team.id);
-
+        team.acquisitionDate = new Date().toISOString().split('T')[0];
+        fteam.teams.push(Object.assign({}, team));
+        this.fantasyTeamsPoints();
         return `Added ${team.name} to team '${fteam.name}'`;
+    }
+
+    setStatsToZero(y: any){
+        y.poolPoints = 0;
+        for(let x in y.stats){
+            y.stats[x] = 0;
+        }
     }
 }

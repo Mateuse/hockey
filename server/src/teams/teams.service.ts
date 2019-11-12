@@ -29,7 +29,8 @@ export class TeamsService {
                                     "link": link,
                                     "stats": stats,
                                     "poolPoints": 0,
-                                    "poolTeam": null
+                                    "poolTeam": null,
+                                    "acquisitionDate": null
                                 }
                                 this.teams.push(team)
                             }
@@ -62,7 +63,6 @@ export class TeamsService {
 
     getTeamById(id: number): Team{
         let match = null;
-
         this.teams.forEach(t => {
             if(t.id == id){
                 match = t;
@@ -97,6 +97,25 @@ export class TeamsService {
                     }
                 )
         }
+    }
+
+    getStatsAfterDate(team: Team, date): any{
+        this.http.get(`https://statsapi.web.nhl.com/api/v1/standings?date=2019-11-10`)
+            .subscribe(
+                res => {
+                    var list = res.data.records;
+
+                    for(let x in list){
+                        let records = list[x].teamRecords
+                        for (let y in records){
+                            if(records[y].team.id == team.id){
+                                team.stats = records[y].leagueRecord;
+                                team.poolPoints = this.getPoolPoints(records[y].leagueRecord);
+                            }
+                        }
+                    }
+                }
+            )
     }
 
     topTeams(){
