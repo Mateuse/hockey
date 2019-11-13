@@ -126,6 +126,7 @@ export class PlayersService {
     }
 
     getStatsAfterDate(player: Player, date){
+        return new Promise((resolve, reject) => {
             date = new Date(date)
             var currentYear = new Date();
             var yearRange = '';
@@ -156,7 +157,10 @@ export class PlayersService {
                     else if (player.position == 'G') {
                         player.poolPoints = this.getPoolPoints(player.stats, 'goalie');
                     }
+
+                    resolve("Done");
                 });
+        });            
     }
 
     topPlayers(query = "all"): any{

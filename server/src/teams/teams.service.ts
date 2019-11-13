@@ -100,22 +100,29 @@ export class TeamsService {
     }
 
     getStatsAfterDate(team: Team, date): any{
-        this.http.get(`https://statsapi.web.nhl.com/api/v1/standings?date=2019-11-10`)
-            .subscribe(
-                res => {
-                    var list = res.data.records;
-
-                    for(let x in list){
-                        let records = list[x].teamRecords
-                        for (let y in records){
-                            if(records[y].team.id == team.id){
-                                team.stats = records[y].leagueRecord;
-                                team.poolPoints = this.getPoolPoints(records[y].leagueRecord);
+        return new Promise((resolve, reject) => {
+            this.http.get(`https://statsapi.web.nhl.com/api/v1/schedule?teamId=${team.id}&startDate=${date}&endDate=${new Date().toISOString().split('T')[0]}`)
+                .subscribe(
+                    res => {
+                        if(res.data.dates[0]){
+                            let prevStats = {}
+                            for(let x in res.data.dates[0].games[0].teams){
+                                if (res.data.dates[0].games[0].teams[x].team.name == team.name){
+                                    prevStats = res.data.dates[0].games[0].teams[x].leagueRecord;
+                                }
                             }
-                        }
+                            this.logger.debug(prevStats);
+                            var currentStats = this.getTeamById(team.id);
+
+                            for (let i in team.stats) {
+                                team.stats[i] = currentStats.stats[i] - prevStats[i];
+                            }
+                            team.poolPoints = this.getPoolPoints(team.stats);
+                            resolve("Done");                            
+                        }                        
                     }
-                }
-            )
+                )
+            });
     }
 
     topTeams(){
