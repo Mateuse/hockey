@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/common/http';
 import { RulesService } from '../rules/rules.service';
 import { Team } from './team.interface';
+import { resolve } from 'dns';
 
 @Injectable()
 export class TeamsService {
@@ -9,13 +10,12 @@ export class TeamsService {
     teams: Array<Team> = [];
     constructor(private readonly http: HttpService, private readonly rulesService: RulesService){}
 
-    getTeams(): any{
-        return new Promise((resolve, reject) => {
+    async getTeams(): Promise<any>{
             this.logger.log("Entered getTeams()");
         try{
-                this.http.get("https://statsapi.web.nhl.com/api/v1/teams")
-                    .subscribe(
-                        res => {
+                await this.http.get("https://statsapi.web.nhl.com/api/v1/teams")
+                    .toPromise()
+                        .then(res => {
                             for(let x in res.data.teams){
                                 var id: number = res.data.teams[x].id
                                 var name: string = res.data.teams[x].name
@@ -34,18 +34,13 @@ export class TeamsService {
                                 }
                                 this.teams.push(team)
                             }
-                            this.logger.log("Saved teams to var")
-                            resolve(res);
-                        },
-                        err => {
-                            reject(JSON.stringify(err))
+                            this.logger.debug("Saved teams to var")      
                         }
                     )          
         }
         catch{
-            reject("error in http request for https://statsapi.web.nhl.com/api/v1/teams")
-        } 
-        });       
+            console.log("error in http request for https://statsapi.web.nhl.com/api/v1/teams")
+        }       
     }   
 
     getTeam(team: String): Team{
@@ -82,11 +77,11 @@ export class TeamsService {
         return ids
     }
 
-    getTeamsStats(): any{
+    async getTeamsStats(): Promise<any>{
         this.logger.log("Entered getTeamsStats()")
         for(let x in this.teams){
-            this.http.get(`https://statsapi.web.nhl.com/api/v1/teams/${this.teams[x].id}/stats`)
-                .subscribe(
+            await this.http.get(`https://statsapi.web.nhl.com/api/v1/teams/${this.teams[x].id}/stats`)
+                .toPromise().then(
                     res => {
                         this.teams[x].stats = res.data.stats[0].splits[0].stat                      
                         this.teams[x].poolPoints = this.getPoolPoints(this.teams[x].stats)

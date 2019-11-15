@@ -8,17 +8,11 @@ import { rejects } from 'assert';
 export class AppService {
   constructor(private readonly playersService: PlayersService, private readonly teamsService: TeamsService){}
 
-  initApp(){
-      return new Promise((resolve, reject) => {
-         resolve(this.teamsService.getTeams());
-      }).then(() => {
-        return new Promise((resolve, reject) => {
-          this.teamsService.getTeamsStats();
-          resolve(this.playersService.getPlayersFromAllTeams());
-        }).then(() => {
-          this.playersService.getStatsForPlayers();
-        });        
-      });
+  async initApp(){
+      await this.teamsService.getTeams();
+      await this.teamsService.getTeamsStats();
+      await this.playersService.getPlayersFromAllTeams();
+      await this.playersService.getStatsForPlayers();
   }
 
   getHello(): string {

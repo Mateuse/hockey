@@ -4,6 +4,9 @@ import { HttpService } from '@nestjs/common/http';
 import { map, catchError} from 'rxjs/operators';
 import { RulesService } from '../rules/rules.service';
 import { Player } from './player.interface';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { PlayerDTO } from './player.dto';
 import { resolve } from 'path';
 
 @Injectable()
@@ -13,34 +16,32 @@ export class PlayersService {
     players: Array<Player> = [];
     private readonly logger = new Logger(PlayersService.name);
 
-    constructor(private readonly http: HttpService, private readonly teamService: TeamsService, private readonly rulesService: RulesService){}
-
-    getPlayersFromAllTeams(): any{
-        return new Promise((resolve, reject) => {
+    constructor(private readonly http: HttpService, private readonly teamService: TeamsService, private readonly rulesService: RulesService,
+                @InjectModel('Player') private readonly playerModel: Model<Player>){}
+    
+    async getPlayersFromAllTeams(): Promise<any>{
             this.logger.log("Entered getPlayersFromAllTeams()");
             let ids = this.teamService.getAllTeamsIds();
             var ids_left = ids.length
             for (const element of ids) {
-                this.http.get(`https://statsapi.web.nhl.com/api/v1/teams/${element}/roster`)
-                    .subscribe(
-                        res => {
+                await this.http.get(`https://statsapi.web.nhl.com/api/v1/teams/${element}/roster`)
+                    .toPromise().then(res => {
                             res.data.roster.forEach(element => {
                                 element.person["position"] = element.position.abbreviation;
                                 element.person["poolTeam"] = null;
                                 this.players.push(element.person);
+                                this.savePlayer(element.person)
                             });
                             ids_left--;
                             if (ids_left == 0) {
-                                resolve("Got Stats");
+                                this.logger.debug('Done getPlayersFromAllTeams()');
                             }
                         },
                         err => {
-                            this.logger.error(err)
-                            reject(err);
+                            this.logger.error(err);
                         }
                     )                
-            }
-        });            
+            }          
     }
 
     getPlayerByName(player): Player[]{
@@ -94,12 +95,11 @@ export class PlayersService {
         return `${player} not found on active rosters`;
     }
 
-    getStatsForPlayers(): any{
+    async getStatsForPlayers(): Promise<any>{
         this.logger.log("Entered getStatsForPlayers()");
-        this.players.forEach(player => {
-            return this.http.get(`https://statsapi.web.nhl.com/api/v1/people/${player.id}/stats?stats=statsSingleSeason`)
-                .subscribe(
-                    res => {
+        this.players.forEach(async player => {
+            await this.http.get(`https://statsapi.web.nhl.com/api/v1/people/${player.id}/stats?stats=statsSingleSeason`)
+                .toPromise().then(res => {
                         try {
                             var stats = res.data.stats[0].splits[0].stat;
                             player.stats = stats;
@@ -222,5 +222,10 @@ export class PlayersService {
         }
 
         return points;
+    }
+
+    async savePlayer(playerDTO: PlayerDTO): Promise<Player>{
+        const newPlayer = await this.playerModel(PlayerDTO);
+        return newPlayer.save();
     }
 }
