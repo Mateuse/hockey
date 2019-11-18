@@ -11,7 +11,7 @@ export class AppService {
   async initApp(){
       await this.teamsService.getTeams();
       await this.teamsService.getTeamsStats();
-      await this.playersService.getPlayersFromAllTeams();
+      await this.playersService.getPlayers();
       await this.playersService.getStatsForPlayers();
   }
 

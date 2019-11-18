@@ -19,6 +19,14 @@ export class PlayersService {
     constructor(private readonly http: HttpService, private readonly teamService: TeamsService, private readonly rulesService: RulesService,
                 @InjectModel('Player') private readonly playerModel: Model<Player>){}
     
+    async getPlayers(): Promise<any>{
+        this.players = await this.getAllPlayers();
+        if(this.players.length == 0){
+            await this.getPlayersFromAllTeams();
+            this.players = await this.getAllPlayers();
+        }
+    }
+
     async getPlayersFromAllTeams(): Promise<any>{
             this.logger.log("Entered getPlayersFromAllTeams()");
             let ids = this.teamService.getAllTeamsIds();
@@ -26,11 +34,19 @@ export class PlayersService {
             for (const element of ids) {
                 await this.http.get(`https://statsapi.web.nhl.com/api/v1/teams/${element}/roster`)
                     .toPromise().then(res => {
-                            res.data.roster.forEach(element => {
-                                element.person["position"] = element.position.abbreviation;
-                                element.person["poolTeam"] = null;
-                                this.players.push(element.person);
-                                this.savePlayer(element.person)
+                            res.data.roster.forEach(async p => {
+                                var player: Player = {
+                                    "id": p.person.id,
+                                    "fullName": p.person.fullName,
+                                    "stats": null,
+                                    "link": p.person.link,
+                                    "position": p.position.abbreviation,
+                                    "poolPoints": 0,
+                                    "poolTeam": null,
+                                    "acquisitionDate": null
+
+                                }
+                                await this.savePlayer(player)
                             });
                             ids_left--;
                             if (ids_left == 0) {
@@ -111,7 +127,8 @@ export class PlayersService {
                             }
                             else if(player.position == 'G'){
                                 player.poolPoints = this.getPoolPoints(player.stats, 'goalie');
-                            }                        
+                            }     
+                            this.updatePlayer(player["_id"], player);                 
                         }
                         catch (err) {
                             this.logger.error(err);
@@ -125,8 +142,8 @@ export class PlayersService {
         });        
     }
 
-    getStatsAfterDate(player: Player, date){
-        return new Promise((resolve, reject) => {
+    async getStatsAfterDate(player: Player, date): Promise<any>{
+            this.logger.log(`Entered get stats after date ${date} for player ${player.fullName} `);     
             date = new Date(date)
             var currentYear = new Date();
             var yearRange = '';
@@ -139,7 +156,7 @@ export class PlayersService {
                 yearRange = end.toString() + currentYear.getFullYear().toString()
             }
             this.http.get(`https://statsapi.web.nhl.com/api/v1/people/${player.id}/stats?stats=gameLog&season=${yearRange}`)
-                .subscribe(res => {
+                .toPromise().then(res => {
                     let set = res.data.stats[0].splits;
                     for (let x in set) {
                         if (new Date(set[x].date) > date) {
@@ -159,8 +176,7 @@ export class PlayersService {
                     }
 
                     resolve("Done");
-                });
-        });            
+                });           
     }
 
     topPlayers(query = "all"): any{
@@ -225,7 +241,17 @@ export class PlayersService {
     }
 
     async savePlayer(playerDTO: PlayerDTO): Promise<Player>{
-        const newPlayer = await this.playerModel(PlayerDTO);
+        const newPlayer = await this.playerModel(playerDTO);
         return newPlayer.save();
+    }
+
+    async getAllPlayers(): Promise<Player[]>{
+        const players = await this.playerModel.find().exec()
+        return players;
+    }
+
+    async updatePlayer(playerId, playerUpdate: PlayerDTO): Promise<Player>{
+        const player = await this.playerModel.findByIdAndUpdate(playerId, playerUpdate, { useFindAndModify: false })
+        return player;
     }
 }

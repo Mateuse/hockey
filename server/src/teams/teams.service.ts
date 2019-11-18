@@ -2,20 +2,32 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/common/http';
 import { RulesService } from '../rules/rules.service';
 import { Team } from './team.interface';
-import { resolve } from 'dns';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { TeamDTO } from './team.dto';
 
 @Injectable()
 export class TeamsService {
     private readonly logger = new Logger(TeamsService.name);
+    private statsFields: Array<string> = ["wins", "losses", "ot"]
     teams: Array<Team> = [];
-    constructor(private readonly http: HttpService, private readonly rulesService: RulesService){}
-
+    constructor(private readonly http: HttpService, private readonly rulesService: RulesService,
+                @InjectModel('Team') private readonly teamModel: Model<Team>){}
+    
     async getTeams(): Promise<any>{
+        this.teams = await this.getAllTeams();
+        if(this.teams.length == 0){
+            await this.getTeamsApi();
+            this.teams = await this.getAllTeams();
+        }
+    }
+    
+    async getTeamsApi(): Promise<any>{
             this.logger.log("Entered getTeams()");
         try{
                 await this.http.get("https://statsapi.web.nhl.com/api/v1/teams")
                     .toPromise()
-                        .then(res => {
+                        .then(async res => {
                             for(let x in res.data.teams){
                                 var id: number = res.data.teams[x].id
                                 var name: string = res.data.teams[x].name
@@ -32,8 +44,9 @@ export class TeamsService {
                                     "poolTeam": null,
                                     "acquisitionDate": null
                                 }
-                                this.teams.push(team)
+                                await this.saveTeam(team);
                             }
+                            
                             this.logger.debug("Saved teams to var")      
                         }
                     )          
@@ -85,6 +98,7 @@ export class TeamsService {
                     res => {
                         this.teams[x].stats = res.data.stats[0].splits[0].stat                      
                         this.teams[x].poolPoints = this.getPoolPoints(this.teams[x].stats)
+                        this.updateTeam(this.teams[x]["_id"], this.teams[x]);
                     },
                     err => {
                         this.logger.error(err);
@@ -94,11 +108,10 @@ export class TeamsService {
         }
     }
 
-    getStatsAfterDate(team: Team, date): any{
-        return new Promise((resolve, reject) => {
-            this.http.get(`https://statsapi.web.nhl.com/api/v1/schedule?teamId=${team.id}&startDate=${date}&endDate=${new Date().toISOString().split('T')[0]}`)
-                .subscribe(
-                    res => {
+    async getStatsAfterDate(team: Team, date): Promise<any>{
+        this.logger.log(`Entered get stats after date ${date} for team ${team.name} `)
+            await this.http.get(`https://statsapi.web.nhl.com/api/v1/schedule?teamId=${team.id}&startDate=${date}&endDate=${new Date().toISOString().split('T')[0]}`)
+                .toPromise().then(res => {
                         if(res.data.dates[0]){
                             let prevStats = {}
                             for(let x in res.data.dates[0].games[0].teams){
@@ -109,16 +122,14 @@ export class TeamsService {
                             this.logger.debug(prevStats);
                             var currentStats = this.getTeamById(team.id);
 
-                            for (let i in team.stats) {
+                            for (let i in this.statsFields) {
                                 team.stats[i] = currentStats.stats[i] - prevStats[i];
                             }
-                            team.poolPoints = this.getPoolPoints(team.stats);
-                            resolve("Done");                            
+                            team.poolPoints = this.getPoolPoints(team.stats);                   
                         }                        
-                    }
-                )
-            });
-    }
+                    });
+            }
+   
 
     topTeams(){
         this.logger.log("Entered topTeams()");
@@ -131,5 +142,20 @@ export class TeamsService {
             points += stats[x] * this.rulesService.pointRules.teams[x]
         }
         return points;
+    }
+
+    async saveTeam(teamDTO: TeamDTO): Promise<Team>{
+        const newTeam = await this.teamModel(teamDTO);
+        return newTeam.save();
+    }
+
+    async getAllTeams(): Promise<Team[]>{
+        const teams = await this.teamModel.find();
+        return teams;
+    }
+
+    async updateTeam(teamId, teamUpdate: TeamDTO): Promise<Team> {
+        const team = await this.teamModel.findByIdAndUpdate(teamId, teamUpdate, { useFindAndModify: false})
+        return team;
     }
 }

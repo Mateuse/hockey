@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, Logger, HttpStatus } from '@nestjs/common';
 import { FantasyTeamsService } from './fantasy-teams.service';
 
 @Controller('fantasy-teams')
@@ -11,13 +11,29 @@ export class FantasyTeamsController {
         return this.fantasy.getTeams();
     }
 
+    @Post('/add/fteam/')
+    async addFTeam(@Res() res, @Body() id: number){
+        const fteam = await this.fantasy.addFTeam(id['name']);
+
+        return res.status(HttpStatus.OK).json({
+            fteam
+        });
+    }
+
     @Post('/add/player')
-    addPlayer(@Body() id: number){
-        return this.fantasy.addPlayerToTeam(id['playerId'], id['teamId'])
+    async addPlayer(@Res() res, @Body() id: number){
+        const player = await this.fantasy.addPlayerToTeam(id['playerId'], id['teamId'])
+        
+        return res.status(HttpStatus.OK).json({
+            player
+        });
     }
 
     @Post('/add/team')
-    addTeam(@Body() id: number) {
-        return this.fantasy.addTeamToTeam(id['teamId'], id['fteamId'])
+    async addTeam(@Res() res, @Body() id: number) {
+        const team = await this.fantasy.addTeamToTeam(id['teamId'], id['fteamId'])
+        return res.status(HttpStatus.OK).json({
+            team
+        });
     }
 }

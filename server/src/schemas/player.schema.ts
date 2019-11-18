@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
 export const PlayerSchema = new mongoose.Schema({
-    id: Number,
+    id: {type: Number, unique: true, required: true},
     fullName: String,
     stats: JSON,
     link: String,
