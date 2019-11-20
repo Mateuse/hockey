@@ -4,6 +4,7 @@ var path = require("path");
 import { TeamsService } from '../teams/teams.service';
 import { PlayersService } from '../players/players.service';
 import { Player } from '../players/player.interface';
+import { Team } from '../teams/team.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { FantasyDTO } from './fantasy-team.dto';
@@ -40,13 +41,27 @@ export class FantasyTeamsService implements OnModuleInit{
 
     async addFTeam(name: string){
         this.logger.log(`entered addFTeam() for new team ${name}`);
+        if(this.getTeam(name).name == name){
+            return `Name ${name} already exitsts in pool`;
+        }
         var fTeam: FantasyTeam = {
             "name": name,
             "players": [],
             "teams": [],
             "poolPoints": 0 
         }
+        this.teams.push(fTeam);
         return await this.saveTeam(fTeam);
+    }
+
+    getTeam(name: string){
+        this.logger.log(`entered checkName() for ${name}`);
+        for (let x in this.teams) {
+            if (this.teams[x].name == name) {
+                return this.teams[x];
+            }
+        }
+        return null;
     }
 
     async addPlayerToTeam(playerId: number, name: string){
@@ -54,9 +69,9 @@ export class FantasyTeamsService implements OnModuleInit{
         let team = this.getTeamByName(name);
         let player = await this.playerService.getPlayerById(playerId);
  
-        // if(player.poolTeam != null){
-        //     return `${player.fullName} is already apart of a team '${team.name}'`
-        // }
+        if(player.poolTeam != null){
+            return `${player.fullName} is already apart of a team '${team.name}'`
+        }
 
         player.poolTeam = team["id"]
         player.acquisitionDate = new Date().toISOString().split('T')[0];
@@ -101,7 +116,7 @@ export class FantasyTeamsService implements OnModuleInit{
 
     async saveTeam(fantasyDTO: FantasyDTO): Promise<FantasyDTO>{
         const newFantasy = await this.fantasyTeamModel(fantasyDTO);
-        return newFantasy;
+        return newFantasy.save();
     }
 
     async getAllFantasyTeams(): Promise<FantasyTeam[]>{

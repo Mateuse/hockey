@@ -143,8 +143,7 @@ export class PlayersService {
     }
 
     async getStatsAfterDate(player: Player, date): Promise<any>{
-            this.logger.log(`Entered get stats after date ${date} for player ${player.fullName} `);     
-            this.logger.debug(player)
+            this.logger.log(`Entered get stats after date ${date} for player ${player.fullName}`);     
             date = new Date(date)
             var currentYear = new Date();
             var yearRange = '';

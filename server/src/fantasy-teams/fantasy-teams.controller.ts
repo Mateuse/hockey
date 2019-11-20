@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, Body, Logger, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, Logger, HttpStatus, Param } from '@nestjs/common';
 import { FantasyTeamsService } from './fantasy-teams.service';
 
 @Controller('fantasy-teams')
@@ -10,6 +10,12 @@ export class FantasyTeamsController {
     getTeams(){
         return this.fantasy.getTeams();
     }
+
+    @Get('/team/:team')
+    getTeam(@Param('team') team) {
+        return this.fantasy.getTeam(team);
+    }
+
 
     @Post('/add/fteam/')
     async addFTeam(@Res() res, @Body() id: number){
