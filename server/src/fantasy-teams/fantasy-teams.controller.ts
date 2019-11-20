@@ -22,7 +22,7 @@ export class FantasyTeamsController {
 
     @Post('/add/player')
     async addPlayer(@Res() res, @Body() id: number){
-        const player = await this.fantasy.addPlayerToTeam(id['playerId'], id['teamId'])
+        const player = await this.fantasy.addPlayerToTeam(id['playerId'], id['fTeamName'])
         
         return res.status(HttpStatus.OK).json({
             player
@@ -31,7 +31,7 @@ export class FantasyTeamsController {
 
     @Post('/add/team')
     async addTeam(@Res() res, @Body() id: number) {
-        const team = await this.fantasy.addTeamToTeam(id['teamId'], id['fteamId'])
+        const team = await this.fantasy.addTeamToTeam(id['teamId'], id['fTeamName'])
         return res.status(HttpStatus.OK).json({
             team
         });

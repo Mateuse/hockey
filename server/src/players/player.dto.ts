@@ -5,6 +5,6 @@ export class PlayerDTO{
     readonly link: string;
     readonly position: string;
     readonly poolPoints: number;
-    readonly poolTeam: number;
+    readonly poolTeam: string;
     readonly acquisitionDate: string;
 }

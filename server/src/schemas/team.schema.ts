@@ -7,6 +7,6 @@ export const TeamSchema = new mongoose.Schema({
     link: String,
     stats: JSON,
     poolPoints: Number,
-    poolTeam: Number,
+    poolTeam: String,
     acquisitionDate: String
 })

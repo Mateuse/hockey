@@ -27,7 +27,7 @@ export class FantasyTeamsService implements OnModuleInit{
     }
 
     getTeamByName(name: string): FantasyTeam{
-        this.logger.log(`Entered getTeamId() for teamId ${name}`)
+        this.logger.log(`Entered getTeamId() for name ${name}`)
         let team = null;
         this.teams.forEach(t => {
             if(t.name == name){
@@ -53,40 +53,46 @@ export class FantasyTeamsService implements OnModuleInit{
         this.logger.log(`entered addPlayerToTeam for playerID ${playerId} and teamId ${name}`)
         let team = this.getTeamByName(name);
         let player = await this.playerService.getPlayerById(playerId);
-        
-        if(player.poolTeam != null){
-            return `${player.fullName} is already apart of a team '${team.name}'`
-        }
-        player.poolTeam = team["_id"]
-        player.acquisitionDate = new Date("October 13, 2019 11:13:00").toISOString().split('T')[0];
-        var playerCopy = Object.assign({}, player)
-        this.setStatsToZero(playerCopy["_doc"])
+ 
+        // if(player.poolTeam != null){
+        //     return `${player.fullName} is already apart of a team '${team.name}'`
+        // }
+
+        player.poolTeam = team["id"]
+        player.acquisitionDate = new Date().toISOString().split('T')[0];
+        var playerCopy = await Object.assign({}, player)
+        this.setStatsToZero(playerCopy["_doc"]);
         await this.playerService.getStatsAfterDate(playerCopy["_doc"], playerCopy["_doc"].acquisitionDate)
-        team.poolPoints += playerCopy["_doc"].poolPoints;
+
+        team.poolPoints += playerCopy["_doc"].poolPoints;        
         team.players.push(playerCopy["_doc"]);
-        await this.updateFantasyTeam(team["_id"], team);
+        await this.updateFantasyTeam(team["id"], team);
         await this.playerService.updatePlayer(player["_id"], player);
         return `Added ${player.fullName} to team '${team.name}'`;
     }
 
     async addTeamToTeam(teamId: number, name: string){
+        this.logger.log(`entered addTeamToTeam for teamId ${teamId} and team name ${name}`)
         let team = this.teamservice.getTeamById(teamId);
         let fteam = await this.getTeamByName(name);
+
         if(team.poolTeam != null){
             return `${team.name} is already apart of a team '${name}'}`
         }
-        team.poolTeam = fteam["_id"];
-        team.acquisitionDate = new Date("October 13, 2019 11:13:00").toISOString().split('T')[0];
-        var teamCopy = Object.assign({}, team)        
+        team.poolTeam = fteam["id"];
+        team.acquisitionDate = new Date().toISOString().split('T')[0];
+        var teamCopy = Object.assign({}, team)  
+        this.setStatsToZero(teamCopy["_doc"])      ;
         await this.teamservice.getStatsAfterDate(teamCopy["_doc"], teamCopy["_doc"].acquisitionDate);
         fteam.poolPoints += teamCopy["_doc"].poolPoints;
         fteam.teams.push(teamCopy["_doc"]);       
-        await this.updateFantasyTeam(fteam["_id"], fteam);
+        await this.updateFantasyTeam(fteam["id"], fteam);
         await this.teamservice.updateTeam(team["_id"], team);
         return `Added ${team.name} to team '${fteam.name}'`;        
     }
 
     setStatsToZero(y: any){
+        this.logger.log(`entered setStatsToZero() for ${y.id}`)
         y.poolPoints = 0;
         for(let x in y.stats){
             y.stats[x] = 0;
@@ -104,6 +110,7 @@ export class FantasyTeamsService implements OnModuleInit{
     }
 
     async updateFantasyTeam(fantasyId, fantasyUpdate: FantasyDTO): Promise<FantasyTeam>{
+        this.logger.debug(fantasyId)
         const fantasy = await this.fantasyTeamModel.findByIdAndUpdate(fantasyId, fantasyUpdate, { useFindAndModify: false })
         return fantasy;
     }

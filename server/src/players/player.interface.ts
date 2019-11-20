@@ -7,6 +7,6 @@ export interface Player extends Document{
     link: string,
     position: string,
     poolPoints: number,
-    poolTeam: number,
+    poolTeam: string,
     acquisitionDate: string
 }
