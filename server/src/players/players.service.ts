@@ -38,13 +38,14 @@ export class PlayersService {
                                 var player: Player = {
                                     "id": p.person.id,
                                     "fullName": p.person.fullName,
+                                    "team": parseInt(element),
                                     "stats": null,
                                     "link": p.person.link,
                                     "position": p.position.abbreviation,
                                     "poolPoints": 0,
                                     "poolTeam": null,
-                                    "acquisitionDate": null
-
+                                    "acquisitionDate": null,
+                                    "history": []
                                 }
                                 await this.savePlayer(player)
                             });
@@ -142,6 +143,26 @@ export class PlayersService {
         });        
     }
 
+    async getSeasonTotalStatHistory(){
+        this.logger.log(`entered getSeasonTotalStatHistory()`);
+        this.players.forEach(async p => {
+            await this.http.get(`https://statsapi.web.nhl.com/api/v1/people/${p.id}/stats?stats=yearByYear`)
+                .toPromise().then(res => {
+                    let history = res.data.stats[0].splits;
+                    let temp = [];
+                    for(let x in history){
+                        if(history[x].league.id == 133){
+                            history[x]["poolPoints"] = this.getPoolPoints(history[x].stat, p.position)
+                            temp.push(history[x])
+                        }
+                    }
+                    p.history = temp;
+                    this.updatePlayer(p["_id"], p);
+                });
+        });        
+
+    }
+
     async getStatsAfterDate(player: Player, date): Promise<any>{
             this.logger.log(`Entered get stats after date ${date} for player ${player.fullName}`);     
             date = new Date(date)
@@ -165,15 +186,7 @@ export class PlayersService {
                             }
                         }
                     }
-                    if (player.position == 'C' || player.position == 'RW' || player.position == 'LW') {
-                        player.poolPoints = this.getPoolPoints(player.stats, 'forward');
-                    }
-                    else if (player.position == 'D') {
-                        player.poolPoints = this.getPoolPoints(player.stats, 'defense');
-                    }
-                    else if (player.position == 'G') {
-                        player.poolPoints = this.getPoolPoints(player.stats, 'goalie');
-                    }
+                    player.poolPoints = this.getPoolPoints(player.stats, player.position)
 
                     resolve("Done");
                 });           
@@ -228,10 +241,42 @@ export class PlayersService {
             }
             players[x]["poolPoints"] = points;
         }
-        return players;
+        return players.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)))
     }
 
-    getPoolPoints(stats, type){
+    historicLeadersCurrentPlayers(){
+        this.logger.log("entered historicLeadersCurrentPlayers()")
+        var leaders = []
+        for(let x in this.players){
+            for(let y in this.players[x].history){
+                let leader = {
+                    "name": this.players[x].fullName,
+                    "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
+                    "games": this.players[x].history[y].stat["games"],
+                    "goals": this.players[x].history[y].stat["goals"],
+                    "assists": this.players[x].history[y].stat["assists"],
+                    "ppg": this.players[x].history[y].stat["powerPlayGoals"],
+                    "wins": this.players[x].history[y].stat["wins"],
+                    "season": this.players[x].history[y].season
+                }
+                leaders.push(leader);
+            }
+        }
+        return leaders.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)))
+    }
+
+    getPoolPoints(stats, position){
+        let type = "";
+        if (position == 'C' || position == 'RW' || position == 'LW') {
+            type = "forward"
+        }
+        else if (position == 'D') {
+            type = 'defense';
+        }
+        else if (position == 'G') {
+           type = 'goalie';
+        }
+        
         let points = 0;
         for(let x in this.rulesService.pointRules[type]){
             points += stats[x] * this.rulesService.pointRules[type][x]

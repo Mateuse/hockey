@@ -13,6 +13,7 @@ export class AppService {
       await this.teamsService.getTeamsStats();
       await this.playersService.getPlayers();
       await this.playersService.getStatsForPlayers();
+      await this.playersService.getSeasonTotalStatHistory();
   }
 
   getHello(): string {

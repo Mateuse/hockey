@@ -29,6 +29,11 @@ export class PlayersController{
         return this.playersService.topPlayers();
     }
 
+    @Get("historicalCurrentPlayers")
+    getHistoricalCurrentPlayers(){
+        return this.playersService.historicLeadersCurrentPlayers();
+    }
+
     @Get("top/forwards")
     getTopForwardsStats() {
         return this.playersService.topPlayers("forwards");

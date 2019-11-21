@@ -16,7 +16,6 @@ export class FantasyTeamsController {
         return this.fantasy.getTeam(team);
     }
 
-
     @Post('/add/fteam/')
     async addFTeam(@Res() res, @Body() id: number){
         const fteam = await this.fantasy.addFTeam(id['name']);
