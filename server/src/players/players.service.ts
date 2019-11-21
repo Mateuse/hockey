@@ -249,17 +249,19 @@ export class PlayersService {
         var leaders = []
         for(let x in this.players){
             for(let y in this.players[x].history){
-                let leader = {
-                    "name": this.players[x].fullName,
-                    "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
-                    "games": this.players[x].history[y].stat["games"],
-                    "goals": this.players[x].history[y].stat["goals"],
-                    "assists": this.players[x].history[y].stat["assists"],
-                    "ppg": this.players[x].history[y].stat["powerPlayGoals"],
-                    "wins": this.players[x].history[y].stat["wins"],
-                    "season": this.players[x].history[y].season
-                }
-                leaders.push(leader);
+                if (this.players[x].history[y].stat["games"] > 20){
+                    let leader = {
+                        "name": this.players[x].fullName,
+                        "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
+                        "games": this.players[x].history[y].stat["games"],
+                        "goals": this.players[x].history[y].stat["goals"],
+                        "assists": this.players[x].history[y].stat["assists"],
+                        "ppg": this.players[x].history[y].stat["powerPlayGoals"],
+                        "wins": this.players[x].history[y].stat["wins"],
+                        "season": this.players[x].history[y].season
+                    }
+                    leaders.push(leader);
+                }                
             }
         }
         return leaders.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)))
