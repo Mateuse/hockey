@@ -278,12 +278,11 @@ export class PlayersService {
         else if (position == 'G') {
            type = 'goalie';
         }
-        
         let points = 0;
-        for(let x in this.rulesService.pointRules[type]){
+        for (let x in this.rulesService.pointRules[type]) {
             points += stats[x] * this.rulesService.pointRules[type][x]
         }
-
+        
         return points;
     }
 
