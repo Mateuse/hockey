@@ -41,4 +41,12 @@ export class FantasyTeamsController {
             team
         });
     }
+
+    @Post('/trade')
+    async trade(@Res() res, @Body() id: number){
+        const trade = await this.fantasy.trade(id);
+        return res.status(HttpStatus.OK).json({
+            trade
+        });
+    }
 }

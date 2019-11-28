@@ -20,15 +20,26 @@ export class FantasyTeamsService implements OnModuleInit{
     async onModuleInit(){
         this.logger.log("Starting FantasyTeamsService")
         this.teams = await this.getAllFantasyTeams();
-        this.logger.debug(this.teams)
     }
 
     getTeams(){
         return this.teams
     }
 
+    getTeamById(id: string): FantasyTeam{
+        this.logger.log(`Entered getTeamById() for  id ${id}`)
+        let team = null;
+        this.teams.forEach(t => {
+            if(t["_id"] == id){
+                team = t;
+                return;
+            }
+        });
+        return team;
+    }
+
     getTeamByName(name: string): FantasyTeam{
-        this.logger.log(`Entered getTeamId() for name ${name}`)
+        this.logger.log(`Entered getTeamByName() for name ${name}`)
         let team = null;
         this.teams.forEach(t => {
             if(t.name == name){
@@ -50,18 +61,26 @@ export class FantasyTeamsService implements OnModuleInit{
             "teams": [],
             "poolPoints": 0 
         }
+        
         this.teams.push(fTeam);
         return await this.saveTeam(fTeam);
     }
 
     getTeam(name: string){
-        this.logger.log(`entered checkName() for ${name}`);
+        this.logger.log(`entered getTeam() for ${name}`);
         for (let x in this.teams) {
             if (this.teams[x].name == name) {
                 return this.teams[x];
             }
         }
-        return null;
+        var team: FantasyTeam = {
+            "name": "",
+            "players": [],
+            "teams": [],
+            "poolPoints": 0  
+        }
+
+        return team;
     }
 
     async addPlayerToTeam(playerId: number, name: string){
@@ -70,7 +89,7 @@ export class FantasyTeamsService implements OnModuleInit{
         let player = await this.playerService.getPlayerById(playerId);
  
         if(player.poolTeam != null){
-            return `${player.fullName} is already apart of a team '${team.name}'`
+            return `${player.fullName} is already apart of a team '${this.getTeamById(player.poolTeam).name}'`
         }
 
         player.poolTeam = team["id"]
@@ -92,7 +111,7 @@ export class FantasyTeamsService implements OnModuleInit{
         let fteam = await this.getTeamByName(name);
 
         if(team.poolTeam != null){
-            return `${team.name} is already apart of a team '${name}'}`
+            return `${team.name} is already apart of a team '${this.getTeamById(team.poolTeam).name}'}`
         }
         team.poolTeam = fteam["id"];
         team.acquisitionDate = new Date().toISOString().split('T')[0];
@@ -114,6 +133,61 @@ export class FantasyTeamsService implements OnModuleInit{
         }
     }
 
+    async trade(tradeObject: any){
+        this.logger.log(`entered trade() for ${tradeObject}`);
+        let fteam1 = this.getTeamByName(tradeObject["fteam1"]);
+        let fteam2 = this.getTeamByName(tradeObject["fteam2"]);
+        if(fteam1 == null || fteam2 == null){
+            return `A team does not exist`;
+        }
+        for (let x in tradeObject["fteam1PlayerPackage"]) {
+            let p = this.playerService.getPlayerById(tradeObject["fteam1PlayerPackage"][x]);
+            if (fteam1["_id"] != p.poolTeam) {
+                return `Error in trade, ${p.fullName} does not exist in team ${fteam1.name}`;
+            }
+            fteam1.players.splice(fteam1.players.indexOf(p));
+            p.poolTeam = fteam2["_id"];
+            fteam2.players.push(p);
+            this.playerService.updatePlayer(p["_id"], p);            
+        }
+        for (let x in tradeObject["fteam1TeamPackage"]) {
+            let t = this.teamservice.getTeamById(tradeObject["fteam1TeamPackage"][x])
+            if (fteam1["_id"] != t.poolTeam) {
+                return `Error in trade, ${t.name} does not exist in team ${fteam1.name}`;
+
+            }
+            fteam1.teams.splice(fteam1.teams.indexOf(t))
+            t.poolTeam = fteam2["_id"];
+            fteam2.teams.push(t);
+            this.teamservice.updateTeam(t["_id"], t);
+        }
+
+        for (let x in tradeObject["fteam2PlayerPackage"]) {
+            let p = this.playerService.getPlayerById(tradeObject["fteam2PlayerPackage"][x]);
+            if (fteam2["_id"] != p.poolTeam) {
+                return `Error in trade, ${p.fullName} does not exist in team ${fteam2.name}`;
+            }
+            fteam2.players.splice(fteam2.players.indexOf(p));
+            p.poolTeam = fteam1["_id"];
+            fteam1.players.push(p);
+            this.playerService.updatePlayer(p["_id"], p);
+        }
+
+        for (let x in tradeObject["fteam2TeamPackage"]) {
+            let t = this.teamservice.getTeamById(tradeObject["fteam2TeamPackage"][x])
+            if (fteam2["_id"] != t.poolTeam) {
+                return `Error in trade, ${t.name} does not exist in team ${fteam2.name}`;
+            }
+            fteam2.teams.splice(fteam2.teams.indexOf(t))
+            t.poolTeam = fteam1["_id"]     
+            fteam1.teams.push(t);
+            this.teamservice.updateTeam(t["_id"], t);       
+        }
+        await this.updateFantasyTeam(fteam1["_id"], fteam1);
+        await this.updateFantasyTeam(fteam2["_id"], fteam2);
+        return `Success trading ${JSON.stringify(tradeObject)}`;
+    }
+
     async saveTeam(fantasyDTO: FantasyDTO): Promise<FantasyDTO>{
         const newFantasy = await this.fantasyTeamModel(fantasyDTO);
         return newFantasy.save();
@@ -125,7 +199,6 @@ export class FantasyTeamsService implements OnModuleInit{
     }
 
     async updateFantasyTeam(fantasyId, fantasyUpdate: FantasyDTO): Promise<FantasyTeam>{
-        this.logger.debug(fantasyId)
         const fantasy = await this.fantasyTeamModel.findByIdAndUpdate(fantasyId, fantasyUpdate, { useFindAndModify: false })
         return fantasy;
     }
