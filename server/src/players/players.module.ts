@@ -9,6 +9,7 @@ import { PlayerSchema } from '../schemas/player.schema';
 @Module({
     imports: [HttpModule, TeamsModule, RulesModule, 
               MongooseModule.forFeature([{ name: 'Player', schema: PlayerSchema}])],
+              
     controllers: [PlayersController],
     providers: [PlayersService],    
     exports: [PlayersService]

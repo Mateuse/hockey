@@ -120,15 +120,7 @@ export class PlayersService {
                         try {
                             var stats = res.data.stats[0].splits[0].stat;
                             player.stats = stats;
-                            if(player.position == 'C' || player.position == 'RW' || player.position == 'LW'){
-                                player.poolPoints = this.getPoolPoints(player.stats, 'forward');
-                            }
-                            else if(player.position == 'D'){
-                                player.poolPoints = this.getPoolPoints(player.stats, 'defense');  
-                            }
-                            else if(player.position == 'G'){
-                                player.poolPoints = this.getPoolPoints(player.stats, 'goalie');
-                            }     
+                            player.poolPoints = this.getPoolPoints(player.stats, player.position);
                             this.updatePlayer(player["_id"], player);                 
                         }
                         catch (err) {
@@ -150,14 +142,14 @@ export class PlayersService {
                 .toPromise().then(res => {
                     let history = res.data.stats[0].splits;
                     let temp = [];
-                    for(let x in history){
-                        if(history[x].league.id == 133){
-                            history[x]["poolPoints"] = this.getPoolPoints(history[x].stat, p.position)
-                            temp.push(history[x])
-                        }
-                    }
-                    p.history = temp;
-                    this.updatePlayer(p["_id"], p);
+                    // for(let x in history){
+                    //     if(history[x].league.id == 133){
+                    //         history[x]["poolPoints"] = this.getPoolPoints(history[x].stat, p.position)
+                    //         temp.push(history[x])
+                    //     }
+                    // }
+                    // p.history = temp;
+                    // this.updatePlayer(p["_id"], p);
                 });
         });        
 
@@ -268,6 +260,7 @@ export class PlayersService {
     }
 
     getPoolPoints(stats, position){
+        
         let type = "";
         if (position == 'C' || position == 'RW' || position == 'LW') {
             type = "forward"
@@ -279,6 +272,7 @@ export class PlayersService {
            type = 'goalie';
         }
         let points = 0;
+
         for (let x in this.rulesService.pointRules[type]) {
             points += stats[x] * this.rulesService.pointRules[type][x]
         }
