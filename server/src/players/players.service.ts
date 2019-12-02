@@ -142,14 +142,14 @@ export class PlayersService {
                 .toPromise().then(res => {
                     let history = res.data.stats[0].splits;
                     let temp = [];
-                    // for(let x in history){
-                    //     if(history[x].league.id == 133){
-                    //         history[x]["poolPoints"] = this.getPoolPoints(history[x].stat, p.position)
-                    //         temp.push(history[x])
-                    //     }
-                    // }
-                    // p.history = temp;
-                    // this.updatePlayer(p["_id"], p);
+                    for(let x in history){
+                        if(history[x].league.id == 133){
+                            history[x]["poolPoints"] = this.getPoolPoints(history[x].stat, p.position)
+                            temp.push(history[x])
+                        }
+                    }
+                    p.history = temp;
+                    this.updatePlayer(p["_id"], p);
                 });
         });        
 
@@ -182,7 +182,7 @@ export class PlayersService {
 
                     resolve("Done");
                 });           
-    }
+    }    
 
     topPlayers(query = "all"): any{
         this.logger.log(`Entered topPlayers() for query ${query}`);
@@ -249,14 +249,44 @@ export class PlayersService {
                         "goals": this.players[x].history[y].stat["goals"],
                         "assists": this.players[x].history[y].stat["assists"],
                         "ppg": this.players[x].history[y].stat["powerPlayGoals"],
+                        "gwg": this.players[x].history[y].stat["gameWinningGoals"],
                         "wins": this.players[x].history[y].stat["wins"],
-                        "season": this.players[x].history[y].season
+                        "shutouts": this.players[x].history[y].stat["shutouts"],
+                        "season": this.players[x].history[y].season,
+                        "team": this.players[x].history[y].team["name"]
                     }
                     leaders.push(leader);
                 }                
             }
         }
-        return leaders.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)))
+        return leaders.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)));
+    }
+
+    //only active players
+    getSeasonStats(season) {
+        this.logger.log(`entered getSeasonStats for season ${season}`);
+        var leaders = [];
+        for(let x in this.players){
+            for(let y in this.players[x].history){
+                if(this.players[x].history[y].season == season){
+                    let leader = {
+                        "name": this.players[x].fullName,
+                        "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
+                        "games": this.players[x].history[y].stat["games"],
+                        "goals": this.players[x].history[y].stat["goals"],
+                        "assists": this.players[x].history[y].stat["assists"],
+                        "ppg": this.players[x].history[y].stat["powerPlayGoals"],
+                        "gwg": this.players[x].history[y].stat["gameWinningGoals"],
+                        "wins": this.players[x].history[y].stat["wins"],
+                        "shutouts": this.players[x].history[y].stat["shutouts"],
+                        "season": this.players[x].history[y].season,
+                        "team": this.players[x].history[y].team["name"]
+                    }
+                    leaders.push(leader);
+                }
+            }
+        }
+        return leaders.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)));
     }
 
     getPoolPoints(stats, position){

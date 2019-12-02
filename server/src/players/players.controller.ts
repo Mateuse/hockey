@@ -24,6 +24,12 @@ export class PlayersController{
         return this.playersService.getStatsForPlayer(player);
     }
 
+    //date is YYYYyyyy ex: 20182019
+    @Get("season/:season")
+    getSeasonStats(@Param('season') season) {
+        return this.playersService.getSeasonStats(season);
+    }
+
     @Get("top")
     getTopPlayersStats(){
         return this.playersService.topPlayers();
