@@ -220,9 +220,27 @@ export class PlayersService {
         }
         else if(query == "goalies"){
             players = goalies
-        }      
+        }
         
-        return players.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)))
+        let temp = [];
+        for(let x in players){
+            this.logger.debug(players[x].stats["goals"])
+            let player = {
+                "name": players[x].fullName,
+                "poolPoints": players[x].poolPoints,
+                "goals": players[x].stats["goals"],
+                "assists": players[x].stats["assists"],
+                "ppg": players[x].stats["powerPlayGoals"],
+                "gwg": players[x].stats["gameWinningGoals"],
+                "wins": players[x].stats["wins"],
+                "shutouts": players[x].stats["shutouts"],
+                "team": this.teamService.getTeamById(players[x].team).name,
+                "position": players[x].position
+            }
+            temp.push(player)
+        }
+        
+        return temp.sort((a, b) => (a.poolPoints > b.poolPoints ? -1 : ((b.pointRules > a.poolPoints) ? 1 : 0)))
     }
 
     getTopPlayers(players, type, rules = this.rulesService.pointRules){

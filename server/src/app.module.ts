@@ -12,14 +12,22 @@ import { ScheduleService } from './schedule/schedule.service';
 import { ScheduleController } from './schedule/schedule.controller';
 import { ScheduleModule } from './schedule/schedule.module';
 import { LiveGamesModule } from './live-games/live-games.module';
+import { LeagueService } from './league/league.service';
+import { LeagueController } from './league/league.controller';
+import { AuthenticationService } from './authentication/authentication.service';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { UsersModule } from './users/users.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [HttpModule, RulesModule, TeamsModule, PlayersModule, FantasyTeamsModule,
     MongooseModule.forRoot('mongodb://localhost/fantasy', { useNewUrlParser: true}),
     ScheduleModule,
-    LiveGamesModule],
-  controllers: [AppController, ScheduleController],
-  providers: [AppService, ScheduleService],
+    LiveGamesModule,
+    AuthenticationModule,
+    UsersModule],
+  controllers: [AppController, ScheduleController, LeagueController],
+  providers: [AppService, ScheduleService, LeagueService, AuthenticationService],
 })
 export class AppModule {
   constructor(private readonly playersService: PlayersService, private readonly teamsService: TeamsService){}

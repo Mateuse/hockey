@@ -1,15 +1,17 @@
-import { Controller, Get, OnModuleInit, Param  } from '@nestjs/common';
+import { Controller, Get, OnModuleInit, Param, UseGuards  } from '@nestjs/common';
 import { PlayersService } from './players.service';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('players')
 export class PlayersController{
-
     constructor(private readonly playersService: PlayersService) { }
     @Get()
     getPlayers() {
         return this.playersService.players;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get("/player/:player")
     getPlayer(@Param('player') player) {
         let result = this.playersService.getPlayerByName(player);
@@ -32,6 +34,7 @@ export class PlayersController{
 
     @Get("top")
     getTopPlayersStats(){
+   
         return this.playersService.topPlayers();
     }
 
