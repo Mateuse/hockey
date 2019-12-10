@@ -228,7 +228,9 @@ export class PlayersService {
             let player = {
                 "name": players[x].fullName,
                 "poolPoints": players[x].poolPoints,
+                "poolPointsPerGame": players[x].poolPoints / players[x].stats["games"],
                 "goals": players[x].stats["goals"],
+                "games": players[x].stats["games"],
                 "assists": players[x].stats["assists"],
                 "ppg": players[x].stats["powerPlayGoals"],
                 "gwg": players[x].stats["gameWinningGoals"],
@@ -263,6 +265,7 @@ export class PlayersService {
                     let leader = {
                         "name": this.players[x].fullName,
                         "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
+                        "poolPointsPerGame": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position) / this.players[x].history[y].stat["games"],
                         "games": this.players[x].history[y].stat["games"],
                         "goals": this.players[x].history[y].stat["goals"],
                         "assists": this.players[x].history[y].stat["assists"],
@@ -290,6 +293,7 @@ export class PlayersService {
                     let leader = {
                         "name": this.players[x].fullName,
                         "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
+                        "poolPointsPerGame": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position) / this.players[x].history[y].stat["games"],
                         "games": this.players[x].history[y].stat["games"],
                         "goals": this.players[x].history[y].stat["goals"],
                         "assists": this.players[x].history[y].stat["assists"],

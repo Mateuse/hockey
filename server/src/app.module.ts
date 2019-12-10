@@ -18,6 +18,7 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UsersModule } from './users/users.module';
 import { JwtService } from '@nestjs/jwt';
+import { LeagueModule } from './league/league.module';
 
 @Module({
   imports: [HttpModule, RulesModule, TeamsModule, PlayersModule, FantasyTeamsModule,
@@ -25,7 +26,8 @@ import { JwtService } from '@nestjs/jwt';
     ScheduleModule,
     LiveGamesModule,
     AuthenticationModule,
-    UsersModule],
+    UsersModule,
+    LeagueModule],
   controllers: [AppController, ScheduleController, LeagueController],
   providers: [AppService, ScheduleService, LeagueService, AuthenticationService],
 })
