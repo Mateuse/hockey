@@ -16,4 +16,14 @@ export class LeagueController {
             league
         });
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/add/team/league')
+    async addTeamToLeague(@Res() res, @Body() id: number) {
+        const team = await this.leagueService.addTeamToLeague(id)
+
+        return res.status(HttpStatus.OK).json({
+            team
+        });
+    }
 }

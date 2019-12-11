@@ -5,6 +5,7 @@ export interface FantasyTeam {
     name: string,
     players: Player[],
     teams: Team[],
-    poolPoints: number
+    poolPoints: number,
+    league: string
 }
 

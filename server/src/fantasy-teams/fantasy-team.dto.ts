@@ -6,4 +6,5 @@ export class FantasyDTO {
     readonly players: Player[];
     readonly teams: Team[];
     readonly poolPoints: number;
+    readonly league: string;
 }

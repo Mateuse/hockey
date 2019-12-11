@@ -1,5 +1,5 @@
 export class LeagueDTO{
-    readonly leageName: string;
+    readonly leagueName: string;
     readonly fantasyTeams: any[];
     readonly createdDate: string;
     readonly positionRules: JSON;

@@ -8,7 +8,7 @@ import { FantasyTeamsModule } from '../fantasy-teams/fantasy-teams.module';
 import { RulesModule } from '../rules/rules.module'
 
 @Module({
-  imports:[HttpModule, PlayersModule, FantasyTeamsModule, RulesModule,
+  imports:[HttpModule, PlayersModule, FantasyTeamsModule,
     MongooseModule.forFeature([{name: 'League', schema: LeagueSchema}])],
   providers: [LeagueService],
   controllers: [LeagueController],
