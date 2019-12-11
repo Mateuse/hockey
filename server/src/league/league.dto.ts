@@ -1,10 +1,7 @@
-import { FantasyTeam } from "../fantasy-teams/fantasy-team.interface";
-
-export class LeagueDTO {
-    readonly name: string;
-    readonly teams: Number[];
-    createdDate: string;
-    pointRules: JSON;
-    positionRules: JSON;
-    users: Number[];
+export class LeagueDTO{
+    readonly leageName: string;
+    readonly fantasyTeams: any[];
+    readonly createdDate: string;
+    readonly positionRules: JSON;
+    readonly pointRules: JSON;
 }

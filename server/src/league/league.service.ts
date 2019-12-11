@@ -1,39 +1,42 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { TeamsService } from '../teams/teams.service';
-import { PlayersService } from '../players/players.service';
+import { Injectable, HttpService, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { League } from './league.interface';
-import { LeagueDTO } from './league.dto';
+import { PlayersService } from '../players/players.service';
 import { RulesService } from '../rules/rules.service';
-import { Player } from '../players/player.interface';
-
+import { FantasyTeamsService } from '../fantasy-teams/fantasy-teams.service';
+import { LeagueDTO } from './league.dto';
 
 @Injectable()
 export class LeagueService {
+    private readonly logger = new Logger(LeagueService.name);
 
-    constructor(private readonly http: HttpService, private readonly teamService: TeamsService, private readonly playerService: PlayersService, 
+    constructor(private readonly httpService: HttpService, private readonly playersService: PlayersService, private readonly fantasyTeamsService: FantasyTeamsService,
         private readonly rulesService: RulesService,
-        @InjectModel('League') private readonly leagueModel: Model<League>) {}
+        @InjectModel('League') private readonly leagueModel: Model<League>){}
 
-    async addLeague(league: JSON){
-
+    
+    async addLeague(league: any){
+        this.logger.debug(league);
     }
 
-    // async saveLeague(league: LeagueDTO){
-    //     const newLeague = await this.leagueModel(league);
-    //     return newLeague.save()
-    // }
+    async saveLeague(LeagueDTO: LeagueDTO): Promise<League>{
+        const newLeague = await this.leagueModel(LeagueDTO);
+        return newLeague.save();
+    }
 
-    // async getAllLeagues(): Promise<League[]>{
-    //     const leagues = await this.leagueModel.find().exec();
-    //     return leagues;
-    // }
+    async getAllLeagues(): Promise<League[]>{
+        const leagues = await this.leagueModel.find().exec();
+        return leagues;
+    }
 
-    // async updateLeague(leagueId, leagueUpdate: LeagueDTO): Promise<LeagueDTO>{
-    //     const league = await this.leagueModel.findByIdAndUpdate(leagueId, leagueUpdate);
-    //     return league
-    // }
+    async updateLeague(leagueId, leageUpdate: LeagueDTO): Promise<League>{
+        const league = await this.leagueModel.findByIdAndUpdate(leagueId, leageUpdate);
+        return league;
+    }
 
-
+    async getLeague(leagueId): Promise<League>{
+        const league = await this.leagueModel.findById(leagueId);
+        return league;
+    }
 }

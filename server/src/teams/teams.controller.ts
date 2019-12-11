@@ -1,4 +1,4 @@
-import { Controller, Get, Param, OnModuleInit } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 
 @Controller('teams')

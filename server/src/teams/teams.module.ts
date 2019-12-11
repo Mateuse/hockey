@@ -1,4 +1,4 @@
-import { Module, HttpModule, Global } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { TeamsController } from './teams.controller';
 import { TeamsService } from './teams.service';
 import { RulesModule } from '../rules/rules.module';

@@ -1,10 +1,9 @@
 import { Document } from 'mongoose';
 
 export interface League extends Document{
-    name: string,
-    teams: Number[],
-    createDate: string,
-    pointRules: JSON,
+    leagueName: string,
+    fantasyTeams: any[],
+    createdDate: string,
     positionRules: JSON,
-    users: Number[]
+    pointRules: JSON
 }

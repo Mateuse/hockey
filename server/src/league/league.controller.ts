@@ -1,25 +1,19 @@
-import { Controller, Get, Post, UseGuards, Res, Body, HttpStatus } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Res, Param, HttpStatus, Body } from '@nestjs/common';
 import { LeagueService } from './league.service';
 import { AuthGuard } from '@nestjs/passport';
-
 
 @Controller('league')
 export class LeagueController {
 
     constructor(private readonly leagueService: LeagueService){}
 
-    @Get("")
-    getLeagues(){
-        
-    }
-
     @UseGuards(AuthGuard('jwt'))
-    @Post("addLeague")
+    @Post('/add/league')
     async addLeague(@Res() res, @Body() id: number){
-        console.log(id)
-        const league = await this.leagueService.addLeague(JSON);
+        const league = await this.leagueService.addLeague(id)
+
         return res.status(HttpStatus.OK).json({
             league
-        })
+        });
     }
 }
