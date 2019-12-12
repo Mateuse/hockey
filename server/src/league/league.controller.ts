@@ -8,6 +8,12 @@ export class LeagueController {
     constructor(private readonly leagueService: LeagueService){}
 
     @UseGuards(AuthGuard('jwt'))
+    @Get('/get/:league')
+    getLeagueByName(@Param('league') league){
+        return this.leagueService.getLeagueByName(league)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
     @Post('/add/league')
     async addLeague(@Res() res, @Body() id: number){
         const league = await this.leagueService.addLeague(id)

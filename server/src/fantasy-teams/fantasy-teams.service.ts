@@ -22,22 +22,16 @@ export class FantasyTeamsService implements OnModuleInit{
         this.teams = await this.getAllFantasyTeams();
     }
 
-    getTeams(){
-        return this.teams
-    }
-
-    getTeamByName(name: string): FantasyTeam{
-        this.logger.log(`Entered getTeamByName() for name ${name}`)
-        let team = null;
-        this.teams.forEach(t => {
-            if(t.name == name){
-                team = t;
-                return;
+    checkTeamExists(name: string, teams: Array<FantasyTeam>){
+        for(let x in teams){
+            if(name == teams[x].name){
+                return false
             }
-        });
-        return team;
+        }
+        return true
     }
 
+    
     async addFTeam(name: string, leagueId: string){
         this.logger.log(`entered addFTeam() for new team ${name}`);
 

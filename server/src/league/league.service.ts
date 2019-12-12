@@ -22,8 +22,16 @@ export class LeagueService implements OnModuleInit{
 
     getLeague(id: string): League{
         for(let x in this.leagues){
-            this.logger.debug(this.leagues[x]["_id"])
             if(this.leagues[x]["_id"] == id){
+                return this.leagues[x]
+            }
+        }
+        return null;
+    }
+    getLeagueByName(name: string): League {
+        this.logger.debug(name)
+        for (let x in this.leagues) {
+            if (this.leagues[x].leagueName == name) {
                 return this.leagues[x]
             }
         }
@@ -43,23 +51,29 @@ export class LeagueService implements OnModuleInit{
     }
 
     async addTeamToLeague(team: any){
-        var fantasyTeam: FantasyTeam = {
-            "name": team["fteam"],
-            "players": [],
-            "teams": [],
-            "poolPoints": 0,
-            "league": team["leagueId"]
-        }        
-        
         var league = this.getLeague(team["leagueId"]);
-        if(league == null){
+        if (league == null) {
             return "League cannot be found"
         }
-        this.logger.debug(league)
-        league.fantasyTeams.push(fantasyTeam);
-        
+        if (this.fantasyTeamsService.checkTeamExists(team["fteam"], league.fantasyTeams)){
+            var fantasyTeam: FantasyTeam = {
+                "name": team["fteam"],
+                "players": [],
+                "teams": [],
+                "poolPoints": 0,
+                "league": team["leagueId"]
+            }
 
-        return this.updateLeague(team["leagueId"], league)
+
+            this.logger.debug(league)
+            league.fantasyTeams.push(fantasyTeam);
+
+
+            return this.updateLeague(team["leagueId"], league)
+        }
+        else{
+            return `Team ${team["fteam"]} already exists in league`
+        }
     }
 
     async saveLeague(LeagueDTO: LeagueDTO): Promise<League>{
@@ -73,7 +87,7 @@ export class LeagueService implements OnModuleInit{
     }
 
     async updateLeague(leagueId, leageUpdate: LeagueDTO): Promise<League>{
-        const league = await this.leagueModel.findByIdAndUpdate(leagueId, leageUpdate);
+        const league = await this.leagueModel.findByIdAndUpdate(leagueId, leageUpdate, {useFindAndModify: false});
         return league;
     }
 
