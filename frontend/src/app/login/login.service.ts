@@ -22,10 +22,14 @@ export class LoginService {
       .then(
         res => {
           let resp = JSON.parse(res);
-          localStorage.setItem("currentUser", res);
-          localStorage.setItem("jwt", resp.access_token);
-          localStorage.setItem("userId", resp.user.id);
-          return true;
+          try{
+            localStorage.setItem("currentUser", res);
+            localStorage.setItem("jwt", resp.access_token);
+            localStorage.setItem("userId", resp.user.id);
+            return true;
+          }catch(err){
+            return resp.response.err;
+          }
         },
         err =>{
           if(err.status == 401 || err.status == 500){
