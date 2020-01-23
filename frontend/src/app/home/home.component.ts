@@ -14,8 +14,8 @@ export class HomeComponent implements OnInit {
   constructor(private http: HttpClient, private appService: AppService) { }
 
   ngOnInit() {
-    // this.user = this.appService.getCurrentUser();
-    // this.token = this.appService.getToken();
+    this.user = this.appService.getCurrentUser();
+    this.token = this.appService.getToken();
   }
 
   clear(){
@@ -23,5 +23,6 @@ export class HomeComponent implements OnInit {
     this.appService.clearUser();
     this.user = this.appService.getCurrentUser();
     this.token = this.appService.getToken();
+    
   }
 }

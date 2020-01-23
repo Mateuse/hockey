@@ -24,7 +24,7 @@ export class LoginComponent{
       this.router.navigate(['/home']);
     }
     else{
-      this.errMsg = "MOPE"
+      this.errMsg = "NOPE"
     }
   }
   
