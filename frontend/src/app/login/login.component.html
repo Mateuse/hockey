@@ -1,0 +1,31 @@
+<div id="login-form-container" class="container">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text"  class="form-control" id="email" required [(ngModel)]="email" name="email" />
+                <div [hidden]="emailErrMsg.length == 0" class="alert alert-danger">
+                    {{ emailErrMsg }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" required [(ngModel)]="password" name="password" />
+                <div [hidden]="passErrMsg.length == 0" class="alert alert-danger">
+                    {{ passErrMsg }}
+                </div>
+                <div [hidden]="errMsg.length == 0" class="alert alert-danger">
+                    {{ errMsg }}
+                </div>
+            </div>
+            <div class="form-group mt-2">
+                <button class="btn btn-primary" [disabled]='!loginForm.form.valid'>Login</button>
+                <a [routerLink]="['/']" class="btn btn-link">Cancel</a>
+                <button class="btn btn-light float-right" type="button" data-toggle="collapse" data-target="#resetPassForm">
+                    Forgot Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -31,20 +31,10 @@ export class FantasyTeamsService implements OnModuleInit{
         return true
     }
 
-    
-    async addFTeam(name: string, leagueId: string){
-        this.logger.log(`entered addFTeam() for new team ${name}`);
-
-        var fTeam: FantasyTeam = {
-            "name": name,
-            "players": [],
-            "teams": [],
-            "poolPoints": 0,
-            "league": leagueId
-        }
-        
-        this.teams.push(fTeam);
-        return await this.saveTeam(fTeam);
+    async addPlayer(playerId, team: FantasyTeam): Promise<FantasyTeam>{
+        var player: Player = this.playerService.getPlayerById(playerId);
+        team.players.push(player);
+        return team;
     }
 
     

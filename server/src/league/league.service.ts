@@ -3,10 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { League } from './league.interface';
 import { PlayersService } from '../players/players.service';
-import { RulesService } from '../rules/rules.service';
 import { FantasyTeamsService } from '../fantasy-teams/fantasy-teams.service';
 import { LeagueDTO } from './league.dto';
-import { FantasyTeam } from 'src/fantasy-teams/fantasy-team.interface';
+import { FantasyTeam } from '../fantasy-teams/fantasy-team.interface';
+import { Player } from '../players/player.interface';
 
 @Injectable()
 export class LeagueService implements OnModuleInit{
@@ -37,11 +37,31 @@ export class LeagueService implements OnModuleInit{
         }
         return null;
     }
+
+    getTeamFromLeague(name: string, teams: Array<FantasyTeam>): FantasyTeam{
+        for (let x in teams) {
+            if (name == teams[x].name) {
+                return teams[x]
+            }
+        }
+        return null
+    }
+
+    getPlayerFromLeague(id, players: Array<Player>): Player{
+        for (let x in players){
+            if (id == players[x].id){
+                return players[x]
+            }
+        }
+        return null
+    }
     
     async addLeague(l: any){
         var league: League = {
             "leagueName": l["leagueName"],
             "fantasyTeams": [],
+            "players": [],
+            "teams": [],
             "createdDate": new Date().toISOString().split('T')[0],
             "positionRules": l["positionRules"],
             "pointRules": l["pointRules"]
@@ -74,6 +94,17 @@ export class LeagueService implements OnModuleInit{
         else{
             return `Team ${team["fteam"]} already exists in league`
         }
+    }
+
+    async addPlayerTeam(payload): Promise<FantasyTeam>{
+        var player= payload["player"];
+        var fteam = payload["fteam"];
+        var league = payload["league"];
+
+        league = this.getLeagueByName(league);
+        fteam = this.getTeamFromLeague(fteam, league.fantasyTeams);
+        
+        return this.fantasyTeamsService.addPlayer(player, fteam);
     }
 
     async saveLeague(LeagueDTO: LeagueDTO): Promise<League>{

@@ -1,6 +1,7 @@
 import { Controller, Get, UseGuards, Post, Res, Param, HttpStatus, Body } from '@nestjs/common';
 import { LeagueService } from './league.service';
 import { AuthGuard } from '@nestjs/passport';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Controller('league')
 export class LeagueController {
@@ -27,6 +28,16 @@ export class LeagueController {
     @Post('/add/team/league')
     async addTeamToLeague(@Res() res, @Body() id: number) {
         const team = await this.leagueService.addTeamToLeague(id)
+
+        return res.status(HttpStatus.OK).json({
+            team
+        });
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/add/player/team')
+    async addPlayerTeam(@Res() res, @Body() id){
+        const team = await this.leagueService.addPlayerTeam(id);
 
         return res.status(HttpStatus.OK).json({
             team
