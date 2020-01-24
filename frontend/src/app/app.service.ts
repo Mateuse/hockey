@@ -4,7 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AppService {
-  private backendIp = 'http://localhost:3000';
+  // if testing on a device that is not hosting the server don't use localhost
+  private backendIp = 'http://10.177.45.116:3000';
 
   getIp(): string {
     return this.backendIp;
@@ -19,7 +20,7 @@ export class AppService {
   }
 
   getCurrentUser(){
-    return JSON.parse(localStorage.getItem("currentUser")).user;
+    return localStorage.getItem("currentUser");
   }
 
   clearUser(){

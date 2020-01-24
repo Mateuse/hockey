@@ -2,6 +2,10 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
+    "android": "tns run android",
+    "ios": "tns run ios",
+    "mobile": "tns run",
+    "preview": "tns preview",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -12,17 +16,22 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~8.2.9",
+    "@angular/cdk": "^8.2.3",
     "@angular/common": "~8.2.9",
     "@angular/compiler": "~8.2.9",
     "@angular/core": "~8.2.9",
     "@angular/forms": "~8.2.9",
+    "@angular/material": "^8.2.3",
     "@angular/platform-browser": "~8.2.9",
     "@angular/platform-browser-dynamic": "~8.2.9",
     "@angular/router": "~8.2.9",
+    "@nativescript/theme": "~2.2.1",
     "email-validator": "^2.0.4",
     "eruda": "^2.0.2",
+    "reflect-metadata": "~0.1.12",
     "rxjs": "~6.4.0",
     "rxjs-compat": "^6.5.4",
+    "tns-core-modules": "~6.3.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },
@@ -31,9 +40,10 @@
     "@angular/cli": "~8.3.8",
     "@angular/compiler-cli": "~8.2.9",
     "@angular/language-service": "~8.2.9",
-    "@types/node": "~8.9.4",
+    "@nativescript/tslint-rules": "~0.0.5",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -42,9 +52,13 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "nativescript-dev-webpack": "~1.4.0",
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.5.3"
+  },
+  "nativescript": {
+    "id": "org.nativescript.ngsample"
   }
 }

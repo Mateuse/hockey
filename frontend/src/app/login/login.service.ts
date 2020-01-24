@@ -23,7 +23,7 @@ export class LoginService {
         res => {
           let resp = JSON.parse(res);
           try{
-            localStorage.setItem("currentUser", res);
+            localStorage.setItem("currentUser", resp.user.email);
             localStorage.setItem("jwt", resp.access_token);
             localStorage.setItem("userId", resp.user.id);
             return true;
@@ -36,7 +36,8 @@ export class LoginService {
             return err.error;
           }
           else{
-            return "Server not Available"
+
+            return JSON.stringify(err)
           }
         }
       )

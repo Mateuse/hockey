@@ -4,12 +4,15 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { StartupComponent } from './startup/startup.component';
 import { AuthGuard } from './_helpers/auth.guard';
+import { League } from 'src/models/league';
+import { LeadersComponent } from './leaders/leaders.component';
 
 
 const routes: Routes = [
   { path: '', component: StartupComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
-  { path: 'login', component: LoginComponent},  
+  { path: 'login', component: LoginComponent},
+  { path: 'leagueleaders', component: LeadersComponent}  
 ];
 
 @NgModule({

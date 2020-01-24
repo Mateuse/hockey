@@ -1,0 +1,19 @@
+<div id="league-leaders-container" class="container">
+    <div class="row justify-content-center">
+        <h2 class="text-center p-3">League Leaders</h2>
+        <table matSort (matSortChange)="sortData($event)" class="table table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th>Rank</th>
+                    <th mat-sort-header="{{param}}" *ngFor="let param of displayParams()">{{param}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let player of sortedData; let i = index">
+                    <td>{{i + 1}}</td>
+                    <td *ngFor="let param of player | simplePlayer">{{param}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

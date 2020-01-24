@@ -25,7 +25,7 @@ export class StartupComponent implements OnInit {
     let loggedIn = this.appService.isLoggedIn();
 
     if(loggedIn){
-      this.user - this.appService.getCurrentUser();
+      this.user = this.appService.getCurrentUser();
     }
     else{
       this.user = undefined;
