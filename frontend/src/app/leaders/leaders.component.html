@@ -1,19 +1,38 @@
 <div id="league-leaders-container" class="container">
     <div class="row justify-content-center">
         <h2 class="text-center p-3">League Leaders</h2>
-        <table matSort (matSortChange)="sortData($event)" class="table table-responsive">
+        <table matSort (matSortChange)="sortData($event, 'player')" class="table table-responsive">
             <thead class="thead-light">
                 <tr>
                     <th>Rank</th>
-                    <th mat-sort-header="{{param}}" *ngFor="let param of displayParams()">{{param}}</th>
+                    <th mat-sort-header="{{param}}" *ngFor="let param of displayParams('player')">{{param}}</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let player of sortedData; let i = index">
-                    <td>{{i + 1}}</td>
-                    <td *ngFor="let param of player | simplePlayer">{{param}}</td>
+                <tr *ngFor="let player of sortedDataPlayer | paginate: {itemsPerPage: 10, currentPage: p}">
+                    <td>{{sortedDataPlayer.indexOf(player) + 1}}</td>
+                    <td *ngFor="let param of player | simplePlayer;">{{param}}</td>
                 </tr>
             </tbody>
         </table>
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+    <div class="row justify-content-center">
+        <h2 class="text-center p-3">Goalie Leaders</h2>
+        <table matSort (matSortChange)="sortData($event, 'goalie')" class="table table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th>Rank</th>
+                    <th mat-sort-header="{{param}}" *ngFor="let param of displayParams('goalie')">{{param}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let player of sortedDataGoalie | paginate: {itemsPerPage: 10, currentPage: p}">
+                    <td>{{sortedDataPlayer.indexOf(player) + 1}}</td>
+                    <td *ngFor="let param of player | simpleGoalie;">{{param}}</td>
+                </tr>
+            </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
 </div>

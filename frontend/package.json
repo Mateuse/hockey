@@ -28,6 +28,7 @@
     "@nativescript/theme": "~2.2.1",
     "email-validator": "^2.0.4",
     "eruda": "^2.0.2",
+    "ngx-pagination": "^5.0.0",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.4.0",
     "rxjs-compat": "^6.5.4",

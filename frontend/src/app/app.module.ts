@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
@@ -14,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LeadersComponent } from 'src/app/leaders/leaders.component';
 import { TestPipe } from './pipes/test.pipe';
 import { SimplePlayerPipe } from './pipes/simple-player.pipe';
+import { SimpleGoaliePipe } from './pipes/simple-goalie.pipe';
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import { SimplePlayerPipe } from './pipes/simple-player.pipe';
     StartupComponent,
     LeadersComponent,
     TestPipe,
-    SimplePlayerPipe
+    SimplePlayerPipe,
+    SimpleGoaliePipe
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,8 @@ import { SimplePlayerPipe } from './pipes/simple-player.pipe';
     HttpClientModule,
     FormsModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]
