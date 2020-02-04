@@ -32,4 +32,5 @@ export class StartupComponent implements OnInit {
     }
     return loggedIn;
   }
+  
 }

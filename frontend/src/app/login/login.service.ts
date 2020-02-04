@@ -46,4 +46,6 @@ export class LoginService {
   validateEmail(email){
     return validate(email);
   }
+
+  
 }

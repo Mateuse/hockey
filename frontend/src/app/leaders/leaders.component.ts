@@ -16,7 +16,7 @@ export class LeadersComponent implements OnInit {
   private topGoalies: Array<SimpleGoalie> = [];
   private topForwards: Array<SimplePlayer> = [];
   private topDefense: Array<SimplePlayer> = [];
-  private display: string = "Players";
+  display: string = "Players";
 
   p: number = 1
 

@@ -10,12 +10,12 @@ import { AppService } from '../app.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit{
-  private email: string = "";
-  private password: string = "";
+  email: string = "";
+  password: string = "";
 
-  private emailErrMsg: String = "";
-  private passErrMsg: String = "";
-  private errMsg: String = "";
+  emailErrMsg: String = "";
+  passErrMsg: String = "";
+  errMsg: String = "";
 
   constructor(private http: HttpClient, private loginService: LoginService, private router: Router, private appService: AppService) { }
 
@@ -37,4 +37,9 @@ export class LoginComponent implements OnInit{
     }
   }
   
+
+  test() {
+    console.log("gelslf")
+    this.router.navigate(['/leagueleaders'])
+  }
 }

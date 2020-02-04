@@ -9,7 +9,7 @@ import { User } from 'src/models/user';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  private user: string;
+  user: string;
   token;
   constructor(private http: HttpClient, private appService: AppService) { }
 
