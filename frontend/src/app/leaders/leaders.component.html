@@ -1,6 +1,14 @@
 <div id="league-leaders-container" class="container">
     <div class="row justify-content-center">
-        <h2 class="text-center p-3">League Leaders</h2>
+        <h2 class="text-center p-3">League Leaders {{display}}</h2>
+    </div>
+    <div class="row justfiy-content-left">
+        <button class="btn btn-info leader-type" *ngIf="display != 'Players'" (click)="display='Players'">Players</button>
+        <button class="btn btn-info leader-type" *ngIf="display != 'Forwards'" (click)="display='Forwards'">Forwards</button>
+        <button class="btn btn-info leader-type" *ngIf="display != 'Defense'" (click)="display='Defense'">Defense</button>
+        <button class="btn btn-info leader-type" *ngIf="display != 'Goalies'" (click)="display='Goalies'">Goalies</button>
+    </div>
+    <div class="row justify-content-center" *ngIf="display == 'Players'">
         <table matSort (matSortChange)="sortData($event, 'player')" class="table table-responsive">
             <thead class="thead-light">
                 <tr>
@@ -17,8 +25,41 @@
         </table>
                     <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
-    <div class="row justify-content-center">
-        <h2 class="text-center p-3">Goalie Leaders</h2>
+    <div class="row justify-content-center" *ngIf="display == 'Forwards'">
+        <table matSort (matSortChange)="sortData($event, 'forward')" class="table table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th>Rank</th>
+                    <th mat-sort-header="{{param}}" *ngFor="let param of displayParams('forward')">{{param}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let player of sortedDataForward | paginate: {itemsPerPage: 10, currentPage: p}">
+                    <td>{{sortedDataForward.indexOf(player) + 1}}</td>
+                    <td *ngFor="let param of player | simplePlayer;">{{param}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+    <div class="row justify-content-center" *ngIf="display == 'Defense'">
+        <table matSort (matSortChange)="sortData($event, 'defense')" class="table table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th>Rank</th>
+                    <th mat-sort-header="{{param}}" *ngFor="let param of displayParams('defense')">{{param}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let player of sortedDataDefense | paginate: {itemsPerPage: 10, currentPage: p}">
+                    <td>{{sortedDataDefense.indexOf(player) + 1}}</td>
+                    <td *ngFor="let param of player | simplePlayer;">{{param}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+    <div class="row justify-content-center"  *ngIf="display == 'Goalies'">
         <table matSort (matSortChange)="sortData($event, 'goalie')" class="table table-responsive">
             <thead class="thead-light">
                 <tr>
@@ -28,7 +69,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let player of sortedDataGoalie | paginate: {itemsPerPage: 10, currentPage: p}">
-                    <td>{{sortedDataPlayer.indexOf(player) + 1}}</td>
+                    <td>{{sortedDataGoalie.indexOf(player) + 1}}</td>
                     <td *ngFor="let param of player | simpleGoalie;">{{param}}</td>
                 </tr>
             </tbody>
