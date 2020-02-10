@@ -26,7 +26,7 @@ export class LeadersComponent implements OnInit {
   sortedDataDefense: SimplePlayer[];
 
   constructor(private http: HttpClient, private appService: AppService) { 
-    this.ip = appService.getIp()
+    this.ip = appService.getIp();
   }
 
   async ngOnInit() {

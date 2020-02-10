@@ -1,14 +1,24 @@
-import { Injectable } from '@angular/core';
-
+import { Injectable, OnInit } from '@angular/core';
+import { environment as dev } from '../environments/environment';
+import { environment as prod } from '../environments/environment.prod';
 @Injectable({
   providedIn: 'root'
 })
-export class AppService {
+export class AppService{
   // if testing on a device that is not hosting the server don't use localhost
-  private backendIp = 'http://10.177.45.116:3000';
+  
+  private backendIp: string
+
+  checkEnv(): string{
+    if (dev.production == false) {
+      return dev.apiUrl;
+    }
+    return prod.apiUrl;
+  }
 
   getIp(): string {
-    return this.backendIp;
+    this.backendIp = this.checkEnv();
+    return this.backendIp.toString();
   }
 
   getToken(): string{

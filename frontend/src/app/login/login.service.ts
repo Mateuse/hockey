@@ -26,6 +26,7 @@ export class LoginService {
             localStorage.setItem("currentUser", resp.user.email);
             localStorage.setItem("jwt", resp.access_token);
             localStorage.setItem("userId", resp.user.id);
+            localStorage.setItem("user", resp.user);
             return true;
           }catch(err){
             return resp.response.err;

@@ -28,12 +28,11 @@ export class LoginComponent implements OnInit{
 
   async onSubmit(){
     let res = await this.loginService.login(this.email, this.password);
-    alert(res)
     if(res){
       this.router.navigate(['/home']);
     }
     else{
-      this.errMsg = "NOPE"
+      this.errMsg = "Invalid Login"
     }
   }
   

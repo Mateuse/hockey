@@ -5,6 +5,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import { NgxPaginationModule } from 'ngx-pagination';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from 'src/app/app.component';
@@ -16,6 +17,9 @@ import { LeadersComponent } from 'src/app/leaders/leaders.component';
 import { TestPipe } from './pipes/test.pipe';
 import { SimplePlayerPipe } from './pipes/simple-player.pipe';
 import { SimpleGoaliePipe } from './pipes/simple-goalie.pipe';
+import { LeagueComponent } from './league/league.component';
+import { LeaguesComponent } from './leagues/leagues.component';
+import { SignupComponent } from './signup/signup.component';
 
 
 @NgModule({
@@ -27,7 +31,10 @@ import { SimpleGoaliePipe } from './pipes/simple-goalie.pipe';
     LeadersComponent,
     TestPipe,
     SimplePlayerPipe,
-    SimpleGoaliePipe
+    SimpleGoaliePipe,
+    LeagueComponent,
+    LeaguesComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +44,8 @@ import { SimpleGoaliePipe } from './pipes/simple-goalie.pipe';
     FormsModule,
     MatTableModule,
     MatSortModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MDBBootstrapModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
