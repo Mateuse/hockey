@@ -184,7 +184,7 @@ export class PlayersService {
                 });           
     }    
 
-    topPlayers(query = "all"): any{
+    topPlayers(query = "skaters"): any{
         this.logger.log(`Entered topPlayers() for query ${query}`);
         return this.sortStats(query);
     }
@@ -208,9 +208,8 @@ export class PlayersService {
         }
 
         let players = []
-        if(query == "all"){
+        if(query == "skaters"){
             players = forwards.concat(defense);
-            players = players.concat(goalies)
         }
         else if(query == "forwards"){
             players = forwards
@@ -228,7 +227,7 @@ export class PlayersService {
             let player = {
                 "name": players[x].fullName,
                 "poolPoints": players[x].poolPoints,
-                "poolPointsPerGame": players[x].poolPoints / players[x].stats["games"],
+                "poolPointsPerGame": this.getPoolPointsPerGame(players[x].poolPoints, players[x].stats["games"]),
                 "goals": players[x].stats["goals"],
                 "games": players[x].stats["games"],
                 "assists": players[x].stats["assists"],
@@ -265,7 +264,7 @@ export class PlayersService {
                     let leader = {
                         "name": this.players[x].fullName,
                         "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
-                        "poolPointsPerGame": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position) / this.players[x].history[y].stat["games"],
+                        "poolPointsPerGame": this.getPoolPointsPerGame(this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position), this.players[x].history[y].stat["games"]),
                         "games": this.players[x].history[y].stat["games"],
                         "goals": this.players[x].history[y].stat["goals"],
                         "assists": this.players[x].history[y].stat["assists"],
@@ -293,7 +292,7 @@ export class PlayersService {
                     let leader = {
                         "name": this.players[x].fullName,
                         "poolPoints": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position),
-                        "poolPointsPerGame": this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position) / this.players[x].history[y].stat["games"],
+                        "poolPointsPerGame": this.getPoolPointsPerGame(this.getPoolPoints(this.players[x].history[y].stat, this.players[x].position), this.players[x].history[y].stat["games"]),
                         "games": this.players[x].history[y].stat["games"],
                         "goals": this.players[x].history[y].stat["goals"],
                         "assists": this.players[x].history[y].stat["assists"],
@@ -345,5 +344,9 @@ export class PlayersService {
     async updatePlayer(playerId, playerUpdate: PlayerDTO): Promise<Player>{
         const player = await this.playerModel.findByIdAndUpdate(playerId, playerUpdate, { useFindAndModify: false })
         return player;
+    }
+
+    getPoolPointsPerGame(poolPoints: number, games: number): string{
+        return (poolPoints/games).toFixed(2);
     }
 }

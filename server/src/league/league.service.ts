@@ -7,6 +7,7 @@ import { FantasyTeamsService } from '../fantasy-teams/fantasy-teams.service';
 import { LeagueDTO } from './league.dto';
 import { FantasyTeam } from '../fantasy-teams/fantasy-team.interface';
 import { Player } from '../players/player.interface';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class LeagueService implements OnModuleInit{
@@ -14,7 +15,7 @@ export class LeagueService implements OnModuleInit{
     leagues: Array<League> = [];
 
     constructor(private readonly httpService: HttpService, private readonly playersService: PlayersService, private readonly fantasyTeamsService: FantasyTeamsService,
-        @InjectModel('League') private readonly leagueModel: Model<League>){}
+        @InjectModel('League') private readonly leagueModel: Model<League>, private readonly usersService: UsersService){}
     
     async onModuleInit(){
         this.leagues = await this.getAllLeaguesDB();
@@ -55,19 +56,29 @@ export class LeagueService implements OnModuleInit{
         }
         return null
     }
+
+    async checkName(payload: any){
+        return await this.usersService.checkLeague(payload["name"], await this.usersService.getUser(payload["user"]));
+    }
     
     async addLeague(l: any){
         var league: League = {
             "leagueName": l["leagueName"],
+            "commissioner": l["commissioner"],
             "fantasyTeams": [],
-            "players": [],
+            "players": [l["commissioner"]],
             "teams": [],
             "createdDate": new Date().toISOString().split('T')[0],
             "positionRules": l["positionRules"],
             "pointRules": l["pointRules"]
         }
-        
-        return this.saveLeague(league)
+        let user = await this.usersService.getUser(l["commissioner"])
+        if(await this.usersService.checkLeague(l["leagueName"], user)){
+            user.leagues.push(l["leagueName"]);
+            await this.usersService.updateUser(user["_id"], user)
+            return await this.saveLeague(league)
+        }
+        return false;
     }
 
     async addTeamToLeague(team: any){
@@ -84,8 +95,6 @@ export class LeagueService implements OnModuleInit{
                 "league": team["leagueId"]
             }
 
-
-            this.logger.debug(league)
             league.fantasyTeams.push(fantasyTeam);
 
 

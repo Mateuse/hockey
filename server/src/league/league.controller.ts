@@ -43,4 +43,15 @@ export class LeagueController {
             team
         });
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/checkname')
+    async checkName(@Res() res, @Body() id) {
+        const name = await this.leagueService.checkName(id);
+
+        return res.status(HttpStatus.OK).json({
+            name
+        });
+    }
+
 }

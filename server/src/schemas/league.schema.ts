@@ -1,7 +1,8 @@
 import * as mongoose from 'mongoose';
 
 export const LeagueSchema = new mongoose.Schema({
-    leagueName: { type: String, unique: true, required: true },
+    leagueName: { type: String, required: true },
+    commissioner: String,
     fantasyTeams: [],
     players: [],
     teams: [],

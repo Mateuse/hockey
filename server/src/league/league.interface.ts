@@ -4,6 +4,7 @@ import { Team } from '../teams/team.interface';
 
 export interface League extends Document{
     leagueName: string,
+    commissioner: string,
     fantasyTeams: any[],
     players: Player[],
     teams: Team[],

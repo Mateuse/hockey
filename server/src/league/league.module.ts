@@ -5,10 +5,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { LeagueSchema } from '../schemas/league.schema';
 import { PlayersModule } from '../players/players.module';
 import { FantasyTeamsModule } from '../fantasy-teams/fantasy-teams.module';
-import { RulesModule } from '../rules/rules.module'
+import { UsersModule } from '../users/users.module'
 
 @Module({
-  imports:[HttpModule, PlayersModule, FantasyTeamsModule,
+  imports:[HttpModule, PlayersModule, FantasyTeamsModule, UsersModule,
     MongooseModule.forFeature([{name: 'League', schema: LeagueSchema}])],
   providers: [LeagueService],
   controllers: [LeagueController],
