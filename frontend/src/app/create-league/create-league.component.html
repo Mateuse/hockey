@@ -1,0 +1,163 @@
+<div class="container">
+    <div class="row form-div" *ngIf="current == 'rules'">
+        <form class="form" #createLeagueForm="ngForm" (ngSubmit)="onSubmit()">
+            <h2>Create a League</h2><br/>
+            <div class="row form-div">
+                <div class="form-group col-md-6">
+                    <label for="leagueName">League Name</label>
+                    <input type="text" class="form-control" id="leagueName" (blur)="checkName()" [(ngModel)]="leagueName" name="leagueName"/>
+                    <div [hidden]="availableName" class="alert alert-danger">
+                        You are already apart of a league with "{{leagueName}}" as a name.
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="commissioner">Commissioner</label>
+                    <input type="text" class="form-control" id="commissioner" required [(ngModel)]="commissioner" name="commissioner" />
+                </div>
+            </div>
+            <h3>Point Rules:</h3>
+            <p><small><i>Set the amount of points for each category</i></small></p>
+            <h4>Forwards</h4>
+            <div class="row form-div">
+                <div class="form-group col-md-1">
+                    <label for="forwardGoals">Goals</label>
+                    <input type="text" class="form-control" id="forwardGoals" required [(ngModel)]="forwardGoals" name="forwardGoals" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="forwardAssists">Assists</label>
+                    <input type="text" class="form-control" id="forwardAssists" required [(ngModel)]="forwardAssists" name="forwardAssists" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="forwardPPG">PPG</label>
+                    <input type="text" class="form-control" id="forwardPPG" required [(ngModel)]="forwardPPG" name="forwardPPG" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="forwardSHG">SHG</label>
+                    <input type="text" class="form-control" id="forwardAssists" required [(ngModel)]="forwardAssists"
+                        name="forwardAssists" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="forwardShots">SOG</label>
+                    <input type="text" class="form-control" id="forwardShots" required [(ngModel)]="forwardShots" name="forwardShots" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="forwardGWG">GWG</label>
+                    <input type="text" class="form-control" id="forwardGWG" required [(ngModel)]="forwardGWG" name="forwardGWG" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="forwardHits">Hits</label>
+                    <input type="text" class="form-control" id="forwardHits" required [(ngModel)]="forwardHits"
+                        name="forwardHits" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="forwardPIM">PIM</label>
+                    <input type="text" class="form-control" id="forwardPIM" required [(ngModel)]="forwardPIM" name="forwardPIM" />
+                </div>
+            </div>
+            <h4>Defense</h4>
+            <div class="row form-div">
+                <div class="form-group col-md-1">
+                    <label for="defenseGoals">Goals</label>
+                    <input type="text" class="form-control" id="defenseGoals" required [(ngModel)]="defenseGoals"
+                        name="defenseGoals" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="defenseAssists">Assists</label>
+                    <input type="text" class="form-control" id="defenseAssists" required [(ngModel)]="defenseAssists"
+                        name="defenseAssists" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="defensePPG">PPG</label>
+                    <input type="text" class="form-control" id="defensePPG" required [(ngModel)]="defensePPG" name="defensePPG" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="defenseSHG">SHG</label>
+                    <input type="text" class="form-control" id="defenseAssists" required [(ngModel)]="defenseAssists"
+                        name="defenseAssists" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="defenseShots">SOG</label>
+                    <input type="text" class="form-control" id="defenseShots" required [(ngModel)]="defenseShots"
+                        name="defenseShots" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="defenseGWG">GWG</label>
+                    <input type="text" class="form-control" id="defenseGWG" required [(ngModel)]="defenseGWG" name="defenseGWG" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="defenseHits">Hits</label>
+                    <input type="text" class="form-control" id="defenseHits" required [(ngModel)]="defenseHits"
+                        name="defenseHits" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="defensePIM">PIM</label>
+                    <input type="text" class="form-control" id="defensePIM" required [(ngModel)]="defensePIM" name="defensePIM" />
+                </div>
+            </div>
+            <h4>Goalies</h4>
+            <div class="row form-div">
+                <div class="form-group col-md-1">
+                    <label for="goalieWins">Wins</label>
+                    <input type="text" class="form-control" id="goalieWins" required [(ngModel)]="goalieWins"
+                        name="goalieWins" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="goalieOTL">OTL</label>
+                    <input type="text" class="form-control" id="goalieOTL" required [(ngModel)]="goalieOTL"
+                        name="goalieOTL" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="goalieShutout">Shutout</label>
+                    <input type="text" class="form-control" id="goalieShutout" required [(ngModel)]="goalieShutout" name="goalieShutout" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="goalieSaves">Saves</label>
+                    <input type="text" class="form-control" id="goalieSaves" required [(ngModel)]="goalieSaves" name="goalieSaves" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="goalieGA">GA</label>
+                    <input type="text" class="form-control" id="goalieGA" required [(ngModel)]="goalieGA"
+                        name="goalieGA" />
+                </div>                
+            </div>
+            <h4>Teams</h4>
+            <div class="row form-div">
+                <div class="form-group col-md-1">
+                    <label for="teamWin">Wins</label>
+                    <input type="text" class="form-control" id="teamWin" required [(ngModel)]="teamWin" name="teamWin" />
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="teamOTL">OTL</label>
+                    <input type="text" class="form-control" id="teamOTL" required [(ngModel)]="teamOTL" name="teamOTL" />
+                </div>
+            </div>
+            <h3>Position Rules:</h3>
+            <p><small><i>Set the amount of players per position</i></small></p>
+            <div class="row form-div">
+                <div class="form-group col-md-3">
+                    <label for="numberOfForwards">Forwards</label>
+                    <input type="text" class="form-control" id="numberOfForwards" required [(ngModel)]="numberOfForwards"
+                        name="numberOfForwards" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="numberOfDefense">Defense</label>
+                    <input type="text" class="form-control" id="numberOfDefense" required [(ngModel)]="numberOfDefense"
+                        name="numberOfDefense" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="numberOfGoalies">Goalies</label>
+                    <input type="text" class="form-control" id="numberOfGoalies" required [(ngModel)]="numberOfGoalies"
+                        name="numberOfGoalies" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="numberOfTeams">Teams</label>
+                    <input type="text" class="form-control" id="numberOfTeams" required [(ngModel)]="numberOfTeams"
+                        name="numberOfTeams" />
+                </div>
+            </div>
+            <div class="form-group mt-2">
+                <button class="btn btn-primary" [disabled]='!createLeagueForm.form.valid'>Create</button>
+                <a [routerLink]="['/leagues']" class="btn btn-danger float-right">Cancel</a>            </div>
+        </form>
+    </div>
+</div>

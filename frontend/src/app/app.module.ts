@@ -20,6 +20,7 @@ import { SimpleGoaliePipe } from './pipes/simple-goalie.pipe';
 import { LeagueComponent } from './league/league.component';
 import { LeaguesComponent } from './leagues/leagues.component';
 import { SignupComponent } from './signup/signup.component';
+import { CreateLeagueComponent } from './create-league/create-league.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { SignupComponent } from './signup/signup.component';
     SimpleGoaliePipe,
     LeagueComponent,
     LeaguesComponent,
-    SignupComponent
+    SignupComponent,
+    CreateLeagueComponent
   ],
   imports: [
     BrowserModule,

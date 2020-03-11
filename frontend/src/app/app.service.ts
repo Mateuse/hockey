@@ -1,6 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 import { environment as dev } from '../environments/environment';
 import { environment as prod } from '../environments/environment.prod';
+import { User } from 'src/models/user';
 @Injectable({
   providedIn: 'root'
 })
@@ -33,14 +34,19 @@ export class AppService{
     return localStorage.getItem("currentUser");
   }
 
+  getUser(): User{
+        let user: User = JSON.parse(localStorage.getItem("user"));
+        return user;
+  }
   clearUser(){
     localStorage.removeItem("jwt");
     localStorage.removeItem("userId");
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("user")
   }
 
   isLoggedIn(): boolean{
-    if(localStorage.getItem("jwt") != undefined && localStorage.getItem("userId") != undefined && localStorage.getItem("currentUser") != undefined){
+    if(localStorage.getItem("jwt") != undefined && localStorage.getItem("userId") != undefined && localStorage.getItem("currentUser") != undefined && localStorage.getItem("user") != undefined){
       return true;
     }
     return false;

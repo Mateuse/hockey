@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit{
   passErrMsg: String = "";
   errMsg: String = "";
 
-  constructor(private http: HttpClient, private loginService: LoginService, private router: Router, private appService: AppService) { }
+  constructor(private loginService: LoginService, private router: Router, private appService: AppService) { }
 
   async ngOnInit(){
     const currentUser = this.appService.getCurrentUser()
@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit{
   
 
   test() {
-    console.log("gelslf")
     this.router.navigate(['/leagueleaders'])
   }
 }

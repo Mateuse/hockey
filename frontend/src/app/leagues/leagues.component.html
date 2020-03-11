@@ -1,7 +1,18 @@
 <div class="container">
-    <div class="row justify-content-center">
-        <h2 class="text-center p-3">Your Leagues</h2>
+    <div class="row">
+        <div class="col-md-6" *ngIf="userLeagues == null">
+            <h3>Join or Create a League</h3>
+            <button class="btn btn-primary" (click)="router.navigate(['/createleague'])">Create League</button>
+        </div>
+        <div class="col-md-6">
+            <h3>Your Leagues</h3>
+            <div *ngIf="userLeagues == null">
+                You are not apart of any leagues <button class="btn btn-primary" (click)="router.navigate(['/createleague'])">Create League</button>
+            </div>
+            {{userLeagues}}
+        </div>
     </div>
-
+    
+    
 </div>
 

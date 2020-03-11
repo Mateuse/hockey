@@ -17,4 +17,4 @@ export class User{
         this.leagues = leagues;
     }
 
-}
+} 
