@@ -3,6 +3,7 @@ import { AppService } from '../app.service';
 import { HttpClient } from '@angular/common/http';
 import { CreateLeagueService } from './create-league.service'
 import { Router } from '@angular/router';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-create-league',
@@ -69,7 +70,12 @@ export class CreateLeagueComponent implements OnInit {
       alert("NOPE")
     }
     else{
-      this.router.navigate(['/leagues'])
+      let user: User = this.appService.getUser();
+      user.leagues.push(this.leagueName);
+      localStorage.setItem("user", JSON.stringify(user));
+      
+      console.log(this.appService.getUser())
+      this.router.navigate(["/leagues"])
     }
   }
 

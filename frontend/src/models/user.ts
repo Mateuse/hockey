@@ -5,11 +5,11 @@ export class User{
     email: string;
     password: string;
     username: string;
-    leagues: Array<League>;
+    leagues: Array<String>;
 
-    constructor(email: string, password: string, username: string, leagues: Array<League>);
-    constructor(email: string, password: string, username: string, leagues: Array<League>, id: number);
-    constructor(email: string, password: string, username: string, leagues: Array<League>, id?: number){
+    constructor(email: string, password: string, username: string, leagues: Array<String>);
+    constructor(email: string, password: string, username: string, leagues: Array<String>, id: number);
+    constructor(email: string, password: string, username: string, leagues: Array<String>, id?: number){
         this.id = id;
         this.email = email;
         this.password = password;

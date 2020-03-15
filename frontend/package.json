@@ -32,6 +32,7 @@
     "eruda": "^2.0.2",
     "mdbootstrap": "^4.12.0",
     "ngx-pagination": "^5.0.0",
+    "node": "^13.10.1",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.4.0",
     "rxjs-compat": "^6.5.4",

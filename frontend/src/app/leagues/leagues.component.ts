@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./leagues.component.scss']
 })
 export class LeaguesComponent implements OnInit {
-  private userLeagues: League[] = null;
+  private userLeagues: String[] = null;
 
   leagueName: string = "";
 
