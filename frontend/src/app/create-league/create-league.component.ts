@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppService } from '../app.service';
 import { HttpClient } from '@angular/common/http';
 import { CreateLeagueService } from './create-league.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-league',
@@ -51,11 +52,12 @@ export class CreateLeagueComponent implements OnInit {
 
 
   constructor(private http: HttpClient, private appService: AppService,
-            private createLeagueService: CreateLeagueService) {
+            private createLeagueService: CreateLeagueService, private router: Router) {
     this.ip = this.appService.getIp()
    }
 
   ngOnInit() {
+    this.checkName(this.leagueName)
   }
 
   async onSubmit(){
@@ -64,10 +66,10 @@ export class CreateLeagueComponent implements OnInit {
 
     let res = await this.createLeagueService.createLeague(this.leagueName, this.commissioner, positionRules, pointRules);
     if(res["league"] == false){
-      
+      alert("NOPE")
     }
     else{
-      alert("GOOD")
+      this.router.navigate(['/leagues'])
     }
   }
 
