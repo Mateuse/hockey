@@ -25,6 +25,7 @@
     "@angular/platform-browser": "~8.2.9",
     "@angular/platform-browser-dynamic": "~8.2.9",
     "@angular/router": "~8.2.9",
+    "@fortawesome/fontawesome-free": "^5.12.1",
     "@nativescript/theme": "~2.2.1",
     "angular-bootstrap-md": "^8.9.0",
     "bcrypt": "^3.0.8",
