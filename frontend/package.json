@@ -28,7 +28,7 @@
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@nativescript/theme": "~2.2.1",
     "angular-bootstrap-md": "^8.9.0",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "email-validator": "^2.0.4",
     "eruda": "^2.0.2",
     "mdbootstrap": "^4.12.0",
